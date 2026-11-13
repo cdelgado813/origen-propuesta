@@ -58,6 +58,9 @@ p { margin: 0; }
 .menu { display: flex; gap: 28px; margin: 0; padding: 0; list-style: none; }
 .menu a { text-decoration: none; font-weight: 600; font-size: 0.95rem; color: var(--texto-2); transition: color 160ms ease; }
 .menu a:hover { color: var(--texto); }
+.menu a[aria-current="true"] { color: var(--texto); text-decoration: underline; text-decoration-color: var(--magenta); text-decoration-thickness: 2px; text-underline-offset: 10px; }
+.saltar { position: absolute; left: var(--margen); top: -60px; z-index: 60; background: var(--magenta); color: #fff; padding: 12px 18px; font-weight: 700; text-decoration: none; }
+.saltar:focus { top: 10px; }
 .cabecera-acciones { margin-left: auto; display: flex; gap: 10px; align-items: center; }
 .cabecera .boton { min-height: 40px; padding: 0 16px; font-size: 0.95rem; }
 .abrir-menu { display: none; }
@@ -210,6 +213,11 @@ section.bloque { padding: clamp(72px, 9vw, 120px) 0; border-bottom: 1px solid va
 .apuntarse { background: var(--fondo-2); padding: 18px 20px; margin-bottom: 20px; border-left: 3px solid var(--menta); }
 .apuntarse strong { display: block; margin-bottom: 4px; }
 .panel .boton { width: 100%; margin-bottom: 10px; }
+.panel-extra { display: grid; grid-template-columns: auto 1fr; gap: 10px; }
+.panel-extra .boton { margin-bottom: 0; }
+.panel-aviso { min-height: 1.5em; margin-top: 10px; font-size: 0.9rem; color: var(--menta); }
+.hoy-boton { min-height: 44px; padding: 0 16px; }
+.hoy-boton[disabled] { opacity: 0.4; cursor: default; }
 
 /* Ligas */
 .liga { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: clamp(32px, 5vw, 72px); align-items: start; }
@@ -230,8 +238,13 @@ section.bloque { padding: clamp(72px, 9vw, 120px) 0; border-bottom: 1px solid va
 
 /* Juegos y formatos: rejilla compacta */
 .juegos { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1px; background: var(--linea); border: 1px solid var(--linea); }
-.juego { background: var(--fondo); padding: 20px 20px 18px; display: flex; flex-direction: column; gap: 10px; min-height: 196px; border-top: 4px solid var(--juego); }
+.juego { position: relative; background: var(--fondo); padding: 20px 20px 18px; transition: background-color 160ms ease; display: flex; flex-direction: column; gap: 10px; min-height: 196px; border-top: 4px solid var(--juego); }
 .juego h3 { font-size: 1.05rem; }
+.juego h3 a { text-decoration: none; }
+.juego h3 a::after { content: ""; position: absolute; inset: 0; }
+.juego:has(a):hover { background: var(--fondo-2); }
+.juego:has(a):hover h3 { color: var(--juego); }
+.juego .proximo strong { text-decoration: underline; text-decoration-color: var(--juego); text-decoration-thickness: 2px; text-underline-offset: 4px; }
 .juego .formatos { font-size: 0.9rem; color: var(--texto-2); }
 .juego .proximo { margin-top: auto; font-size: 0.9rem; }
 .juego .proximo a { font-weight: 700; text-underline-offset: 4px; text-decoration-color: var(--juego); text-decoration-thickness: 2px; }
@@ -308,6 +321,7 @@ footer { padding: 56px 0 96px; color: var(--texto-2); font-size: 0.95rem; }
 </head>
 <body>
 
+<a class="saltar" href="#inicio">Saltar al contenido</a>
 <header class="cabecera">
   <div class="ancho">
     <a class="logo" href="#inicio" aria-label="Origen, inicio"><svg role="img" aria-hidden="true" id="Capa_2" data-name="Capa 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 175.22 89.91">
@@ -431,6 +445,7 @@ footer { padding: 56px 0 96px; color: var(--texto-2); font-size: 0.95rem; }
         <button class="flecha" id="mes-ant" aria-label="Mes anterior">‹</button>
         <h3 id="mes-nombre" aria-live="polite">Noviembre 2026</h3>
         <button class="flecha" id="mes-sig" aria-label="Mes siguiente">›</button>
+        <button class="boton boton-borde hoy-boton" id="ir-hoy">Hoy</button>
         <div class="vista" role="group" aria-label="Vista">
           <button id="ver-lista" aria-pressed="false">Lista</button>
           <button id="ver-mes" aria-pressed="true">Mes</button>
@@ -649,20 +664,24 @@ function pintarProductos() {
 
 // Agenda
 const movil = matchMedia("(max-width: 760px)").matches;
-const est = { juego: "todos", tipo: "todos", vista: movil ? "lista" : "mes", anio: ahora.getFullYear(), mes: ahora.getMonth() };
+let guardado = "todos"; try { guardado = localStorage.getItem("origen-juego") || "todos"; } catch (e) {}
+const est = { juego: JUEGO[guardado] ? guardado : "todos", tipo: "todos", vista: movil ? "lista" : "mes", anio: ahora.getFullYear(), mes: ahora.getMonth() };
 function opciones(caja, lista, clave) {
   caja.innerHTML = lista.map(([v, t, c]) => `<button class="opcion" aria-pressed="${est[clave] === v}" data-v="${v}" ${c ? `style="--juego:${c}"` : ""}>${c ? '<span class="marca"></span>' : ""}${esc(t)}</button>`).join("");
-  caja.onclick = ev => { const b = ev.target.closest(".opcion"); if (!b) return; est[clave] = b.dataset.v; pintarFiltros(); pintarAgenda(); };
+  caja.onclick = ev => { const b = ev.target.closest(".opcion"); if (!b) return; est[clave] = b.dataset.v; recordar(); pintarFiltros(); pintarAgenda(); };
 }
 function pintarFiltros() {
   opciones($("#filtro-juego"), [["todos", "Todos"], ...JUEGOS.map(j => [j.id, j.name.replace(" Card Game", "").replace(": The Gathering", "").replace("Yu-Gi-Oh", "Yu-Gi-Oh!"), j.color])], "juego");
   opciones($("#filtro-tipo"), [["todos", "Todos"], ...Object.entries(TIPOS)], "tipo");
 }
+// El juego elegido se recuerda para la próxima visita
+const recordar = () => { try { localStorage.setItem("origen-juego", est.juego); } catch (e) {} };
 const filtrados = () => EVENTOS.filter(e => (est.juego === "todos" || e.game === est.juego) && (est.tipo === "todos" || e.type === est.tipo));
 function pintarAgenda() {
   $("#mes-nombre").textContent = `${may(MESES[est.mes])} ${est.anio}`;
   $("#ver-mes").setAttribute("aria-pressed", est.vista === "mes");
   $("#ver-lista").setAttribute("aria-pressed", est.vista === "lista");
+  $("#ir-hoy").disabled = est.anio === ahora.getFullYear() && est.mes === ahora.getMonth();
   const pre = `${est.anio}-${String(est.mes + 1).padStart(2, "0")}`;
   const desdeHoy = est.vista === "lista" && HOY.startsWith(pre);
   const evs = ordenar(filtrados().filter(e => e.date.startsWith(pre) && (!desdeHoy || e.date >= HOY)));
@@ -701,6 +720,7 @@ $("#mes-ant").onclick = () => { if (--est.mes < 0) { est.mes = 11; est.anio--; }
 $("#mes-sig").onclick = () => { if (++est.mes > 11) { est.mes = 0; est.anio++; } pintarAgenda(); };
 $("#ver-mes").onclick = () => { est.vista = "mes"; pintarAgenda(); };
 $("#ver-lista").onclick = () => { est.vista = "lista"; pintarAgenda(); };
+$("#ir-hoy").onclick = () => { est.anio = ahora.getFullYear(); est.mes = ahora.getMonth(); pintarAgenda(); };
 
 // Detalle: precio, premios y, sobre todo, cómo apuntarse
 let origenFoco = null;
@@ -717,11 +737,50 @@ function abrirPanel(e) {
     ${e.meta ? `<dt>Premios</dt><dd>${esc(limpio(e.meta))}</dd>` : ""}
     <dt>Dónde</dt><dd>Carrer Ample 65, Terrassa</dd></dl>
     ${apuntarse}
-    <a class="boton boton-borde" href="https://www.google.com/maps/dir/?api=1&destination=Carrer%20Ample%2065%2C%2008225%20Terrassa" target="_blank" rel="noopener">Cómo llegar</a>`;
+    <a class="boton boton-borde" href="https://www.google.com/maps/dir/?api=1&destination=Carrer%20Ample%2065%2C%2008225%20Terrassa" target="_blank" rel="noopener">Cómo llegar</a>
+    <div class="panel-extra"><button class="boton boton-borde" id="compartir">Compartir</button><button class="boton boton-borde" id="al-calendario">Añadir al calendario</button></div>
+    <p class="panel-aviso" id="panel-aviso" aria-live="polite"></p>`;
   $("#panel").classList.add("abierto"); $("#velo").classList.add("abierto");
   $("#panel-cerrar").onclick = cerrarPanel; $("#panel-cerrar").focus();
+  $("#compartir").onclick = () => compartir(e);
+  $("#al-calendario").onclick = () => descargarIcs(e);
+  // Cada evento tiene su enlace: se puede mandar por WhatsApp y abre esta ficha
+  history.replaceState(null, "", "#evento-" + e.id);
 }
-function cerrarPanel() { $("#panel").classList.remove("abierto"); $("#velo").classList.remove("abierto"); origenFoco?.focus(); }
+function cerrarPanel() {
+  if (!$("#panel").classList.contains("abierto")) return;
+  $("#panel").classList.remove("abierto"); $("#velo").classList.remove("abierto"); origenFoco?.focus();
+  if (location.hash.startsWith("#evento-")) history.replaceState(null, "", location.pathname + location.search);
+}
+async function compartir(e) {
+  const url = location.href.split("#")[0] + "#evento-" + e.id, d = fecha(e.date);
+  const texto = `${limpio(e.title)}, ${DIAS[dsem(d)]} ${d.getDate()} de ${MESES[d.getMonth()]} a las ${e.time} en Origen`;
+  if (navigator.share) { try { await navigator.share({ title: limpio(e.title), text: texto, url }); } catch (x) {} return; }
+  try { await navigator.clipboard.writeText(`${texto}: ${url}`); $("#panel-aviso").textContent = "Enlace copiado. Pégalo donde quieras."; }
+  catch (x) { $("#panel-aviso").textContent = url; }
+}
+// Archivo .ics para el calendario del móvil, Google o Outlook (3 horas por defecto)
+function descargarIcs(e) {
+  const [h, m] = e.time.split(":").map(Number), base = e.date.replace(/-/g, "");
+  const fin = `${String(Math.min(h + 3, 23)).padStart(2, "0")}${String(m).padStart(2, "0")}00`;
+  const lim = s => String(s).replace(/[,;\\]/g, c => "\\" + c);
+  const ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Origen//Agenda//ES", "BEGIN:VEVENT", `UID:${e.id}@origenjuegos.com`,
+    `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").slice(0, 15)}Z`, `DTSTART;TZID=Europe/Madrid:${base}T${e.time.replace(":", "")}00`,
+    `DTEND;TZID=Europe/Madrid:${base}T${fin}`, `SUMMARY:${lim(limpio(e.title))} (Origen)`, `LOCATION:${lim("Origen, Carrer Ample 65, 08225 Terrassa")}`,
+    `DESCRIPTION:${lim(`Inscripción: ${precio(e)}.` + (e.meta ? ` Premios: ${limpio(e.meta)}.` : ""))}`, "END:VEVENT", "END:VCALENDAR"].join("\r\n");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([ics], { type: "text/calendar" }));
+  a.download = `origen-${e.date}-${limpio(e.title).toLowerCase().normalize("NFD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}.ics`;
+  a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  $("#panel-aviso").textContent = "Evento descargado: ábrelo para añadirlo a tu calendario.";
+}
+// Mientras el panel está abierto, el tabulador no se escapa de él
+$("#panel").addEventListener("keydown", ev => {
+  if (ev.key !== "Tab") return;
+  const f = [...$("#panel").querySelectorAll("a, button")]; if (!f.length) return;
+  if (ev.shiftKey && document.activeElement === f[0]) { ev.preventDefault(); f[f.length - 1].focus(); }
+  else if (!ev.shiftKey && document.activeElement === f[f.length - 1]) { ev.preventDefault(); f[0].focus(); }
+});
 $("#velo").onclick = cerrarPanel;
 addEventListener("keydown", ev => { if (ev.key === "Escape") cerrarPanel(); });
 document.addEventListener("click", ev => {
@@ -750,10 +809,11 @@ function pintarLigas() {
 function pintarJuegos() {
   $("#juegos-lista").innerHTML = JUEGOS.map(j => {
     const p = ordenar(EVENTOS.filter(e => e.game === j.id && e.date >= HOY))[0];
-    const prox = p ? (() => { const d = fecha(p.date); return `<span>Próximo:</span> <a href="#agenda" data-juego="${j.id}">${may(DIAS[dsem(d)]).slice(0, 3)} ${d.getDate()}, ${p.time}</a>`; })() : `<span>Pregunta en la tienda por las próximas fechas</span>`;
-    return `<article class="juego" style="--juego:${j.color}"><h3>${esc(limpio(j.name.replace("Yu-Gi-Oh", "Yu-Gi-Oh!")))}</h3><p class="formatos">${j.formats.join(", ")}</p><p class="proximo">${prox}</p></article>`;
+    const prox = p ? (() => { const d = fecha(p.date); return `<span>Próximo:</span> <strong>${may(DIAS[dsem(d)]).slice(0, 3)} ${d.getDate()}, ${p.time}</strong>`; })() : `<span>Pregunta en la tienda por las próximas fechas</span>`;
+    const nombre = esc(limpio(j.name.replace("Yu-Gi-Oh", "Yu-Gi-Oh!")));
+    return `<article class="juego" style="--juego:${j.color}"><h3>${p ? `<a href="#agenda" data-juego="${j.id}" aria-label="${nombre}: ver sus eventos en la agenda">${nombre}</a>` : nombre}</h3><p class="formatos">${j.formats.join(", ")}</p><p class="proximo">${prox}</p></article>`;
   }).join("");
-  $("#juegos-lista").addEventListener("click", ev => { const a = ev.target.closest("[data-juego]"); if (!a) return; est.juego = a.dataset.juego; est.vista = "lista"; pintarFiltros(); pintarAgenda(); });
+  $("#juegos-lista").addEventListener("click", ev => { const a = ev.target.closest("[data-juego]"); if (!a) return; est.juego = a.dataset.juego; est.vista = "lista"; recordar(); pintarFiltros(); pintarAgenda(); });
 }
 
 // Horario y estado
@@ -783,6 +843,18 @@ try { if (!localStorage.getItem("cookies")) $("#cookies").hidden = false; } catc
 $("#cookies").onclick = ev => { const b = ev.target.closest("[data-cookies]"); if (!b) return; try { localStorage.setItem("cookies", b.dataset.cookies); } catch (e) {} $("#cookies").hidden = true; };
 
 pintarHoy(); pintarProductos(); pintarFiltros(); pintarAgenda(); pintarLigas(); pintarJuegos(); pintarHorario();
+
+// El menú marca la sección en la que estás
+const enlacesMenu = [...document.querySelectorAll(".menu a")];
+const espia = new IntersectionObserver(es => es.forEach(x => {
+  if (!x.isIntersecting) return;
+  enlacesMenu.forEach(a => a.setAttribute("aria-current", a.getAttribute("href") === "#" + x.target.id));
+}), { rootMargin: "-45% 0px -50% 0px" });
+enlacesMenu.forEach(a => { const s = document.querySelector(a.getAttribute("href")); if (s) espia.observe(s); });
+
+// Si llegan con el enlace de un evento, se abre su ficha
+const deEnlace = location.hash.startsWith("#evento-") && EVENTOS.find(e => e.id === location.hash.slice(8));
+if (deEnlace) { const d = fecha(deEnlace.date); if (est.juego !== deEnlace.game) { est.juego = "todos"; pintarFiltros(); } est.anio = d.getFullYear(); est.mes = d.getMonth(); pintarAgenda(); $("#agenda").scrollIntoView(); abrirPanel(deEnlace); }
 </script>
 </body>
 </html>
