@@ -1,0 +1,760 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Origen, tienda de cartas y juegos de mesa en Terrassa</title>
+<meta name="description" content="Tienda de cartas coleccionables y juegos de mesa en Carrer Ample 65, Terrassa. Torneos cada semana de One Piece, Pokémon, Magic, Riftbound y más.">
+<script>document.documentElement.classList.add('js')</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+/* Colores de la marca Origen: el azul noche del rótulo, el magenta del neón, la menta y el rosa suave */
+:root {
+  --noche: #0e153f;
+  --noche-2: #1b2459;
+  --papel: #f7f7f7;
+  --papel-2: #e9e9f0;
+  --magenta: #ff1a8a;
+  --menta: #85d3b5;
+  --rosa: #ffb3d9;
+  --negro: #000000;
+  --gris: #4a4f6e;
+  --gris-claro: #c8c8d4;
+
+  --texto: "Schibsted Grotesk", system-ui, sans-serif;
+  --paso-peq: clamp(0.875rem, 0.85rem + 0.1vw, 0.9375rem);
+  --paso-cuerpo: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+  --paso-entrada: clamp(1.25rem, 1.1rem + 0.7vw, 1.625rem);
+  --paso-titulo: clamp(2.25rem, 1.4rem + 3.4vw, 4.25rem);
+  --paso-nombre: clamp(3.5rem, 2rem + 6vw, 7rem);
+
+  --radio-carta: 18px;
+  --margen: clamp(16px, 3vw, 32px);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-soft: cubic-bezier(0.33, 1, 0.68, 1);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 88px; }
+body { margin: 0; background: var(--noche); color: var(--papel); font: 400 var(--paso-cuerpo)/1.45 var(--texto); letter-spacing: -0.01em; -webkit-font-smoothing: antialiased; }
+img { display: block; max-width: 100%; height: auto; }
+a { color: inherit; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--magenta); outline-offset: 3px; }
+h1, h2, h3, h4 { margin: 0; font-weight: 800; letter-spacing: -0.045em; line-height: 0.92; }
+h2 { font-size: var(--paso-titulo); }
+h3 { font-size: var(--paso-entrada); letter-spacing: -0.02em; line-height: 1.1; }
+p { margin: 0; max-width: 58ch; }
+.ancho { width: min(1240px, 100% - 2 * var(--margen)); margin-inline: auto; }
+.oculto { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Botones: siempre píldora, siempre planos */
+.boton { display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 0 26px; border: 0; border-radius: 999px; font-weight: 600; font-size: var(--paso-cuerpo); text-decoration: none; cursor: pointer; transition: transform 140ms var(--ease-out), background-color 180ms ease; }
+.boton:active { transform: scale(0.96); }
+.boton-neon { background: var(--magenta); color: var(--noche); }
+.boton-neon:hover { background: var(--rosa); }
+.boton-noche { background: var(--noche); color: var(--papel); }
+.boton-noche:hover { background: var(--noche-2); }
+.boton-papel { background: var(--papel-2); color: var(--noche); }
+.boton-papel:hover { background: var(--papel); }
+
+/* Barra superior: como el rótulo de la fachada */
+.barra { position: sticky; top: 0; z-index: 20; background: var(--noche); }
+.barra .ancho { display: flex; align-items: center; gap: 24px; height: 76px; }
+.logo { width: 96px; color: var(--papel); flex: none; }
+.logo svg { width: 100%; height: auto; }
+.enlaces { display: flex; gap: 6px; margin: 0 auto; padding: 0; list-style: none; }
+.enlaces a { display: block; padding: 10px 14px; border-radius: 999px; font-weight: 600; text-decoration: none; transition: background-color 180ms ease; }
+.enlaces a:hover { background: var(--noche-2); }
+.abrir-menu { display: none; }
+@media (max-width: 960px) {
+  .enlaces { display: none; position: absolute; top: 76px; left: 0; right: 0; flex-direction: column; background: var(--noche); padding: 8px var(--margen) 24px; }
+  .enlaces.abierto { display: flex; }
+  .enlaces a { font-size: var(--paso-entrada); padding: 12px 0; }
+  .abrir-menu { display: inline-flex; margin-left: auto; min-height: 44px; padding: 0 18px; background: var(--noche-2); color: var(--papel); }
+  .barra .boton-neon { display: none; }
+}
+
+/* La carta: el objeto de toda la página. Esquinas redondeadas como una carta de verdad */
+.carta { background: var(--papel); color: var(--noche); border-radius: var(--radio-carta); padding: 14px; display: grid; gap: 10px; }
+.carta-cabeza { display: flex; align-items: center; gap: 14px; background: var(--papel-2); border-radius: 10px; padding: 10px 10px 10px 18px; }
+.carta-cabeza h1, .carta-cabeza .nombre { flex: 1; min-width: 0; }
+.coste { flex: none; width: 64px; height: 64px; border-radius: 50%; background: var(--magenta); color: var(--noche); display: grid; place-items: center; font-weight: 800; font-size: var(--paso-entrada); letter-spacing: -0.04em; }
+.arte { border-radius: 10px; overflow: hidden; background: var(--noche-2); }
+.arte img { width: 100%; height: 100%; object-fit: cover; }
+.linea-tipo { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; background: var(--papel-2); border-radius: 10px; padding: 10px 18px; font-weight: 600; }
+.caja-texto { padding: 6px 18px 4px; display: grid; gap: 10px; }
+.pie-carta { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 0 4px 0 18px; font-size: var(--paso-peq); color: var(--gris); }
+.stat { background: var(--noche); color: var(--papel); border-radius: 10px; padding: 8px 14px; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* Portada */
+.portada { padding-top: clamp(40px, 8vh, 96px); overflow: hidden; }
+.portada .carta { width: min(640px, 100%); margin-inline: auto; transform-origin: 50% 100%; }
+.portada h1 { font-size: var(--paso-nombre); line-height: 0.88; }
+.portada .arte { aspect-ratio: 16 / 11; }
+.portada .arte img { object-position: 50% 30%; }
+.portada .caja-texto p:first-child { font-size: var(--paso-entrada); line-height: 1.3; }
+.portada-acciones { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+.estado { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; color: var(--noche); font-size: var(--paso-cuerpo); }
+.estado::before { content: ""; width: 12px; height: 12px; border-radius: 50%; background: #1f9d6b; }
+.estado.cerrado::before { background: var(--gris-claro); }
+@media (max-width: 640px) {
+  .portada { padding-top: 20px; }
+  .portada .carta { padding: 10px; }
+  .coste { width: 52px; height: 52px; }
+}
+
+section { position: relative; }
+.bloque { padding-block: clamp(112px, 11vw, 168px); }
+
+/* Agenda */
+.agenda { background: var(--noche); padding-top: clamp(168px, 14vw, 200px); padding-bottom: clamp(120px, 12vw, 180px); }
+.agenda-rejilla { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 80px); align-items: start; }
+.palabra { container-type: inline-size; }
+.palabra h2 { font-size: 27cqw; line-height: 0.8; letter-spacing: -0.06em; color: var(--papel); margin-left: -0.04em; }
+.agenda-intro { margin-top: 24px; max-width: 46ch; color: var(--gris-claro); }
+.filtros { display: grid; gap: 12px; margin-top: 32px; }
+.fila-filtro { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.fila-filtro > span { font-weight: 600; width: 56px; }
+.chip { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px; border: 0; border-radius: 999px; background: var(--noche-2); color: var(--papel); font-weight: 600; font-size: var(--paso-peq); cursor: pointer; transition: background-color 180ms ease, transform 140ms var(--ease-out); }
+.chip:hover { background: #2a3470; }
+.chip:active { transform: scale(0.95); }
+.chip[aria-pressed="true"] { background: var(--papel); color: var(--noche); }
+.punto { width: 10px; height: 10px; border-radius: 50%; background: var(--juego); flex: none; }
+@media (max-width: 640px) { .fila-filtro > span { width: 100%; } }
+
+.navegar { display: flex; align-items: center; gap: 10px; margin: 40px 0 16px; flex-wrap: wrap; }
+.navegar h3 { min-width: 9ch; }
+.flecha { width: 44px; height: 44px; border: 0; border-radius: 50%; background: var(--noche-2); color: var(--papel); font-size: 1.3rem; cursor: pointer; transition: background-color 180ms ease, transform 140ms var(--ease-out); }
+.flecha:hover { background: #2a3470; }
+.flecha:active { transform: scale(0.92); }
+.vistas { margin-left: auto; display: inline-flex; gap: 4px; background: var(--noche-2); padding: 4px; border-radius: 999px; }
+.vistas button { border: 0; background: none; color: var(--gris-claro); min-height: 40px; padding: 0 18px; border-radius: 999px; font-weight: 600; cursor: pointer; }
+.vistas button[aria-pressed="true"] { background: var(--papel); color: var(--noche); }
+
+/* Lista: barras rellenas que se abren en su sitio */
+.dias { display: grid; gap: 6px; }
+.dia { background: var(--noche-2); border-radius: 10px; }
+.dia summary { list-style: none; display: flex; align-items: center; gap: 12px; min-height: 60px; padding: 0 20px; cursor: pointer; font-weight: 600; }
+.dia summary::-webkit-details-marker { display: none; }
+.dia summary::after { content: "+"; margin-left: auto; font-size: 1.5rem; font-weight: 400; transition: transform 240ms var(--ease-out); }
+.dia[open] summary::after { transform: rotate(45deg); }
+.dia summary .cuantos { color: var(--gris-claro); font-weight: 400; }
+.dia.hoy summary { color: var(--papel); }
+.marca-hoy { background: var(--magenta); color: var(--noche); border-radius: 999px; padding: 2px 10px; font-size: var(--paso-peq); }
+.eventos { display: grid; gap: 4px; padding: 0 10px 12px; }
+.evento { display: grid; grid-template-columns: 64px 1fr auto; gap: 14px; align-items: baseline; width: 100%; text-align: left; background: none; border: 0; border-radius: 8px; padding: 12px 10px; cursor: pointer; transition: background-color 180ms ease; }
+.evento:hover { background: #2a3470; }
+.evento .hora { color: var(--gris-claro); }
+.evento .titulo { font-weight: 600; display: flex; gap: 10px; align-items: baseline; }
+.evento .titulo .punto { transform: translateY(-1px); }
+.evento .precio { font-weight: 600; }
+.vacio { background: var(--noche-2); border-radius: 10px; padding: 28px 20px; display: grid; gap: 14px; justify-items: start; }
+
+/* Mes: una tabla de verdad */
+.mes { width: 100%; border-collapse: separate; border-spacing: 4px; table-layout: fixed; margin: 0 -4px; }
+.mes th { font-size: var(--paso-peq); color: var(--gris-claro); font-weight: 600; text-align: left; padding: 4px 8px; }
+.mes td { background: var(--noche-2); border-radius: 8px; vertical-align: top; height: 104px; padding: 8px; }
+.mes td.fuera { background: transparent; }
+.mes .num { font-size: var(--paso-peq); font-weight: 600; color: var(--gris-claro); display: block; margin-bottom: 6px; }
+.mes td.hoy .num { color: var(--noche); background: var(--magenta); border-radius: 999px; width: 28px; height: 28px; display: grid; place-items: center; }
+.mes .mini { display: block; width: 100%; text-align: left; border: 0; background: var(--noche); border-radius: 6px; padding: 5px 7px 5px 12px; margin-bottom: 4px; font-size: var(--paso-peq); line-height: 1.25; cursor: pointer; position: relative; overflow: hidden; transition: background-color 180ms ease; }
+.mes .mini::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--juego); }
+.mes .mini:hover { background: #2a3470; }
+@media (max-width: 760px) { .mes td { height: 64px; padding: 4px; } .mes .mini { font-size: 0; height: 8px; padding: 0; background: var(--juego); }
+  .mes .mini::before { display: none; } .mes th { padding: 2px; } }
+
+/* Tu próxima partida: la cosa viva */
+.proxima { position: sticky; top: 100px; display: grid; gap: 16px; }
+.proxima h3 { font-size: var(--paso-entrada); }
+.proxima select { appearance: none; width: 100%; min-height: 56px; border: 0; border-radius: 999px; padding: 0 48px 0 22px; background: var(--noche-2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%23f7f7f7' stroke-width='2' fill='none'/%3E%3C/svg%3E") no-repeat right 22px center; color: var(--papel); font: 600 var(--paso-cuerpo) var(--texto); cursor: pointer; }
+.carta-evento .arte { background: var(--juego); display: grid; gap: 2px; align-content: end; padding: 40px 18px 16px; }
+.carta-evento .arte span { font-weight: 600; color: var(--sobre-juego); }
+.carta-evento .arte strong { font-size: var(--paso-entrada); line-height: 0.92; letter-spacing: -0.045em; color: var(--sobre-juego); }
+.carta-evento .nombre { font-weight: 800; font-size: var(--paso-entrada); letter-spacing: -0.02em; line-height: 1.1; }
+.carta-evento .coste { font-size: var(--paso-cuerpo); }
+.cuenta { font-weight: 600; }
+@media (max-width: 960px) { .agenda-rejilla { grid-template-columns: 1fr; } .proxima { position: static; } }
+
+/* Juegos: la hoja de precios sobre el campo menta */
+.juegos { background: var(--menta); color: var(--noche); }
+.juegos-rejilla { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 600px); gap: clamp(32px, 6vw, 96px); align-items: center; }
+.juegos-rejilla > div:first-child p { margin-top: 24px; max-width: 34ch; font-size: var(--paso-entrada); line-height: 1.3; }
+.hoja { background: var(--papel); padding: 56px clamp(20px, 4vw, 48px); clip-path: polygon(0 14px, 3% 0, 6% 14px, 9% 0, 12% 14px, 15% 0, 18% 14px, 21% 0, 24% 14px, 27% 0, 30% 14px, 33% 0, 36% 14px, 39% 0, 42% 14px, 45% 0, 48% 14px, 51% 0, 54% 14px, 57% 0, 60% 14px, 63% 0, 66% 14px, 69% 0, 72% 14px, 75% 0, 78% 14px, 81% 0, 84% 14px, 87% 0, 90% 14px, 93% 0, 96% 14px, 100% 0, 100% calc(100% - 14px), 97% 100%, 94% calc(100% - 14px), 91% 100%, 88% calc(100% - 14px), 85% 100%, 82% calc(100% - 14px), 79% 100%, 76% calc(100% - 14px), 73% 100%, 70% calc(100% - 14px), 67% 100%, 64% calc(100% - 14px), 61% 100%, 58% calc(100% - 14px), 55% 100%, 52% calc(100% - 14px), 49% 100%, 46% calc(100% - 14px), 43% 100%, 40% calc(100% - 14px), 37% 100%, 34% calc(100% - 14px), 31% 100%, 28% calc(100% - 14px), 25% 100%, 22% calc(100% - 14px), 19% 100%, 16% calc(100% - 14px), 13% 100%, 10% calc(100% - 14px), 7% 100%, 4% calc(100% - 14px), 0 100%); }
+.hoja h3 { font-size: var(--paso-entrada); margin: 40px 0 18px; }
+.hoja h3:first-child { margin-top: 0; }
+.hoja ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 18px; }
+.item-linea { display: flex; align-items: baseline; gap: 10px; font-weight: 600; }
+.item-linea .relleno { flex: 1; border-bottom: 4px dotted var(--gris-claro); transform: translateY(-5px); min-width: 24px; }
+.item-linea a, .item-linea span:last-child { white-space: nowrap; }
+.item-linea a { text-underline-offset: 4px; }
+.item-linea .punto { width: 12px; height: 12px; align-self: center; }
+.formatos { margin-top: 4px; color: var(--gris); font-size: var(--paso-peq); max-width: 40ch; }
+@media (max-width: 960px) { .juegos-rejilla { grid-template-columns: 1fr; } }
+
+/* Liga: la clasificación impresa */
+.liga-rejilla { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: clamp(32px, 6vw, 96px); align-items: start; }
+.liga-rejilla .datos { margin-top: 20px; color: var(--gris-claro); }
+.cuadro { margin: 40px 0 0; }
+.cuadro img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+.cuadro figcaption { margin-top: 10px; font-size: var(--paso-peq); color: var(--gris-claro); }
+.clasificacion h3 { margin: 32px 12px 12px; }
+.reglas { margin: 0; padding: 0 12px 0 32px; display: grid; gap: 8px; max-width: 60ch; }
+.clasificacion { background: var(--papel); color: var(--noche); border-radius: var(--radio-carta); padding: clamp(16px, 3vw, 32px); }
+.clasificacion table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.clasificacion th { text-align: left; font-size: var(--paso-peq); color: var(--gris); font-weight: 600; padding: 0 12px 12px; }
+.clasificacion td { padding: 13px 12px; }
+.clasificacion tbody tr:nth-child(odd) td { background: var(--papel-2); }
+.clasificacion tbody tr td:first-child { border-radius: 8px 0 0 8px; width: 48px; font-weight: 800; }
+.clasificacion tbody tr td:last-child { border-radius: 0 8px 8px 0; }
+.clasificacion .num { text-align: right; }
+.clasificacion tbody tr:nth-child(1) td:first-child { color: var(--magenta); }
+.clasificacion .puntos { font-weight: 800; }
+@media (max-width: 960px) { .liga-rejilla { grid-template-columns: 1fr; } }
+
+/* El origen: la baraja de 1475 */
+.origen { background: var(--negro); padding-block: clamp(64px, 6vw, 96px) clamp(96px, 9vw, 144px); overflow: hidden; }
+.origen figure { margin: 0; }
+.origen figure img { width: 100%; }
+.origen-texto { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 400px) 200px; gap: 32px; margin-top: 48px; align-items: end; }
+.origen-texto .credito { margin-top: 20px; }
+.pelicula { width: 100%; height: auto; display: block; }
+.origen .rey { width: 100%; }
+.origen-texto p:first-child { font-size: var(--paso-entrada); line-height: 1.25; letter-spacing: -0.02em; font-weight: 600; max-width: 30ch; }
+.credito { font-size: var(--paso-peq); color: var(--gris-claro); max-width: 52ch; }
+@media (max-width: 760px) { .origen-texto { grid-template-columns: 1fr 110px; } .origen-texto > div { grid-column: 1 / -1; } .pelicula { grid-column: 1; } .origen .rey { grid-column: 2; } .origen figure img { width: 180%; max-width: none; transform: translateX(-12%); } }
+
+/* Cómo llegar: lámina cuadrada y pestañas */
+.llegar { background: var(--papel); color: var(--noche); padding-block: 0; }
+.llegar-rejilla { display: grid; grid-template-columns: 1fr 1fr; min-height: 88svh; }
+.lamina { padding: 40px; display: grid; place-items: center; background: var(--papel-2); }
+.lamina-marco { width: 100%; aspect-ratio: 1; position: relative; overflow: hidden; }
+.lamina-marco > * { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; object-fit: cover; }
+.lamina-marco [hidden] { display: none; }
+.llegar-texto { padding: clamp(40px, 6vw, 80px); display: flex; flex-direction: column; justify-content: space-between; gap: 40px; }
+.pestanas { display: flex; flex-wrap: wrap; gap: 6px; }
+.pestanas button { border: 0; background: var(--papel-2); color: var(--noche); min-height: 44px; padding: 0 18px; border-radius: 999px; font-weight: 600; cursor: pointer; transition: background-color 180ms ease; }
+.pestanas button:hover { background: var(--gris-claro); }
+.pestanas button[aria-selected="true"] { background: var(--noche); color: var(--papel); }
+.llegar-texto h2 { font-size: var(--paso-titulo); }
+.panel p { margin-top: 20px; max-width: 40ch; }
+.agenda-intro, .comunidad p, .postal p { max-width: 60ch; }
+.panel ul { margin: 20px 0 0; padding-left: 20px; display: grid; gap: 10px; max-width: 44ch; }
+.acciones-llegar { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.acciones-llegar .boton { min-height: 72px; border-radius: 12px; }
+@media (max-width: 860px) { .llegar-rejilla { grid-template-columns: 1fr; min-height: 0; } .lamina { padding: 16px; } .llegar-texto { padding: 32px var(--margen) 56px; } .acciones-llegar { grid-template-columns: 1fr; } .acciones-llegar .boton { min-height: 60px; } }
+
+/* Horario: un cupón para recortar */
+.horario { background: var(--noche); }
+.cupon { --muesca: 28px; display: grid; grid-template-columns: 46fr 54fr; background: var(--rosa); color: var(--noche); border-radius: var(--radio-carta); -webkit-mask: radial-gradient(circle var(--muesca) at 46% 0, #0000 98%, #000) top / 100% 51% no-repeat, radial-gradient(circle var(--muesca) at 46% 100%, #0000 98%, #000) bottom / 100% 51% no-repeat; mask: radial-gradient(circle var(--muesca) at 46% 0, #0000 98%, #000) top / 100% 51% no-repeat, radial-gradient(circle var(--muesca) at 46% 100%, #0000 98%, #000) bottom / 100% 51% no-repeat; } /* taste-skill-ignore: máscara o elemento flotante */
+.cupon > div { padding: clamp(32px, 5vw, 56px); }
+.cupon > div:first-child { display: flex; flex-direction: column; justify-content: space-between; gap: 24px; }
+.cupon > div:last-child { border-left: 6px dotted var(--noche); }
+.cupon h2 { font-size: var(--paso-titulo); }
+.tabla-horario { width: 100%; border-collapse: collapse; }
+.tabla-horario td { padding: 10px 0; }
+.tramo { white-space: nowrap; }
+.tabla-horario td:first-child { font-weight: 600; padding-right: 20px; }
+.tabla-horario tr.hoy td { font-weight: 800; }
+.tabla-horario tr.hoy td:first-child::after { content: " (hoy)"; font-weight: 600; }
+@media (max-width: 760px) {
+  .cupon { grid-template-columns: 1fr; -webkit-mask: radial-gradient(circle var(--muesca) at 0 50%, #0000 98%, #000) left / 51% 100% no-repeat, radial-gradient(circle var(--muesca) at 100% 50%, #0000 98%, #000) right / 51% 100% no-repeat; mask: radial-gradient(circle var(--muesca) at 0 50%, #0000 98%, #000) left / 51% 100% no-repeat, radial-gradient(circle var(--muesca) at 100% 50%, #0000 98%, #000) right / 51% 100% no-repeat; } /* taste-skill-ignore: máscara o elemento flotante */
+  .cupon > div:last-child { border-left: 0; border-top: 6px dotted var(--noche); }
+}
+
+/* Tienda online y comunidad: la carta de respuesta */
+.respuesta { background: var(--magenta); color: var(--noche); padding-block: clamp(96px, 10vw, 160px) 0; overflow: hidden; }
+.respuesta-rejilla { display: grid; grid-template-columns: 4fr 1fr 7fr; align-items: end; min-height: 70svh; }
+.comunidad { padding-bottom: 64px; }
+.comunidad p { font-size: var(--paso-entrada); line-height: 1.3; max-width: 22ch; }
+.redes { list-style: none; padding: 0; margin: 24px 0 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.redes a { display: inline-flex; min-height: 44px; align-items: center; padding: 0 18px; border-radius: 999px; background: var(--noche); color: var(--papel); font-weight: 600; text-decoration: none; transition: transform 140ms var(--ease-out), background-color 180ms ease; }
+.redes a:hover { background: var(--noche-2); }
+.redes a:active { transform: scale(0.95); }
+.carta-respuesta { grid-column: 3; background: var(--papel); border-radius: var(--radio-carta); padding: clamp(28px, 4vw, 48px) clamp(28px, 4vw, 48px) calc(clamp(28px, 4vw, 48px) + 72px); text-align: center; transform: rotate(2deg) translateY(60px); display: grid; gap: 16px; justify-items: center; }
+.carta-respuesta h2 { font-size: var(--paso-titulo); }
+.carta-respuesta p { max-width: 36ch; }
+.carta-respuesta .boton { width: 100%; min-height: 60px; margin-top: 8px; border-radius: 12px; }
+@media (max-width: 860px) { .respuesta-rejilla { grid-template-columns: 1fr; min-height: 0; } .carta-respuesta { grid-column: 1; transform: rotate(1deg) translateY(40px); } .comunidad { padding-bottom: 40px; } }
+
+/* El reverso: pie con efecto telón */
+.reverso { background: var(--noche); padding: 72px 0 32px; overflow: hidden; }
+@supports (animation-timeline: view()) { html.js .postal { animation: subir linear both; animation-timeline: view(); animation-range: entry 0% entry 90%; } }
+@keyframes subir { from { transform: translateY(160px); } }
+.postal { background: var(--papel); color: var(--noche); padding: 72px clamp(24px, 4vw, 56px) 28px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; -webkit-mask: radial-gradient(circle 50px at 50px 0, #0000 98%, #000) 0 0 / 100px 100% repeat-x; mask: radial-gradient(circle 50px at 50px 0, #0000 98%, #000) 0 0 / 100px 100% repeat-x; } /* taste-skill-ignore: máscara o elemento flotante */
+.postal h2 { font-size: var(--paso-titulo); }
+.postal .mensaje p { margin-top: 16px; max-width: 38ch; }
+.direccion { display: grid; gap: 12px; align-content: start; position: relative; padding-right: 110px; font-style: normal; }
+.direccion a { text-underline-offset: 4px; }
+.sello { position: absolute; top: 0; right: 0; width: 92px; background: var(--papel); padding: 6px; outline: 4px dotted var(--gris-claro); outline-offset: -2px; }
+.sello img { aspect-ratio: 3 / 4; object-fit: cover; }
+.imprenta span { max-width: 62ch; }
+.imprenta { grid-column: 1 / -1; font-size: var(--paso-peq); color: var(--gris); display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: space-between; }
+.imprenta nav { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+@media (max-width: 760px) { .postal { grid-template-columns: 1fr; -webkit-mask-size: 64px 100%; mask-size: 64px 100%; } .direccion { padding-right: 76px; } .sello { width: 66px; } }
+
+/* Detalle del evento: otra carta de la baraja, en diálogo */
+dialog { border: 0; padding: 0; background: none; width: min(420px, 100% - 24px); max-height: calc(100svh - 24px); }
+dialog::backdrop { background: rgba(14, 21, 63, 0.7); }
+dialog .carta { box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.6); } /* taste-skill-ignore: máscara o elemento flotante */
+dialog[open] .carta { animation: sacar 380ms var(--ease-out); }
+@keyframes sacar { from { transform: translateY(40px) rotate(-3deg); opacity: 0; } }
+.cerrar { justify-self: stretch; }
+
+/* Cookies: flota, así que puede llevar sombra */
+.cookies { background: var(--papel); color: var(--noche); font-size: var(--paso-peq); }
+.cookies .ancho { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 24px; padding-block: 12px; }
+.cookies div { display: flex; gap: 8px; }
+.cookies p { max-width: 48ch; }
+.cookies .boton { min-height: 40px; padding: 0 20px; font-size: var(--paso-peq); }
+
+/* Movimiento: entradas por partes, una vez; con JS desactivado todo se ve */
+html.js .entra > * { opacity: 0; transform: translateY(24px); transition: opacity 700ms var(--ease-out), transform 700ms var(--ease-out); }
+html.js .entra.visto > * { opacity: 1; transform: none; }
+html.js .entra.visto > *:nth-child(2) { transition-delay: 80ms; }
+html.js .entra.visto > *:nth-child(3) { transition-delay: 160ms; }
+html.js .entra.visto > *:nth-child(4) { transition-delay: 240ms; }
+html.js .portada .carta { animation: repartir 900ms var(--ease-out) both; }
+@keyframes repartir { from { transform: translateY(120px) rotate(4deg); opacity: 0; } }
+.portada .arte img { animation: deriva 24s var(--ease-soft) infinite alternate; }
+@keyframes deriva { from { transform: scale(1.02); } to { transform: scale(1.1) translateY(-2%); } }
+.origen figure img { transition: transform 200ms linear; }
+html.js .dias .dia { animation: fila 500ms var(--ease-out) both; }
+@keyframes fila { from { opacity: 0; transform: translateY(12px); } }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  html.js .entra > * { transform: none; transition: opacity 300ms ease; }
+  html.js .portada .carta, html.js .postal, .portada .arte img, html.js .dias .dia, dialog[open] .carta { animation: none; }
+  .origen figure img { transform: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="principal">
+<div class="cookies" id="cookies" role="region" aria-label="Cookies" hidden>
+  <div class="ancho">
+    <p>Usamos cookies propias y de terceros para analítica. ¿Nos dejas? <a href="#">Política de cookies</a></p>
+    <div>
+      <button class="boton boton-papel" data-cookies="rechazadas">Rechazar</button>
+      <button class="boton boton-noche" data-cookies="aceptadas">Aceptar</button>
+    </div>
+  </div>
+</div>
+<header class="barra">
+  <div class="ancho">
+    <a class="logo" href="#inicio" aria-label="Origen, inicio"><svg role="img" aria-hidden="true" id="Capa_2" data-name="Capa 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 175.22 89.91">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: currentColor;
+      }
+    </style>
+  </defs>
+  <g id="LOGO">
+    <g id="LOGO-2" data-name="LOGO">
+      <g id="blanc">
+        <path id="ESTRELLA" class="cls-1" d="M37.36,0l1.43,15.21c.04.46.59.69.95.39l7.63-5.61-5.61,7.63c-.3.36-.07.9.39.95l12.71,1.43-12.71,1.43c-.46.04-.69.59-.39.95l5.61,7.63-7.63-5.61c-.36-.3-.9-.07-.95.39l-1.43,15.21-1.43-15.21c-.04-.46-.59-.69-.95-.39l-7.63,5.61,5.61-7.63c.3-.36.07-.9-.39-.95l-12.71-1.43,12.71-1.43c.46-.04.69-.59.39-.95l-5.61-7.63,7.63,5.61c.36.3.9.07.95-.39l1.43-15.21Z"/>
+        <path class="cls-1" d="M62.68,18.09c29.3-8.13,81.05-9.38,104.87,12.59,12.73,12.47,8.5,28.77-4.57,38.75-34.12,27.15-124.37,28.37-156.26-2.66-14.26-15.3-3.87-29.87,12.97-36.05,0,0,.48.88.48.88-4.44,2.49-8.7,5.43-11.98,9.34-6.24,7.3-4.89,15.71,2.19,21.85,10.39,8.93,24.28,12.49,37.47,15.08,31.88,5.4,71.18,3.37,100.59-10.73,26.61-13.63,21.08-30.93-4.46-40.81-12.75-4.96-26.45-7.23-40.06-8.28-13.67-1.03-27.47-.7-41.09,1.03l-.13-.99h0Z"/>
+        <g>
+          <path class="cls-1" d="M26.84,40.05c7.39,0,11.48,3.77,11.48,10.92s-4.09,10.92-11.48,10.92h-5.08c-7.39,0-11.48-3.77-11.48-10.92s4.09-10.92,11.48-10.92h5.08ZM21.97,45.1c-4.4,0-6.49,2.09-6.49,5.86s2.09,5.86,6.49,5.86h4.65c4.4,0,6.49-2.09,6.49-5.86s-2.09-5.86-6.49-5.86h-4.65Z"/>
+          <path class="cls-1" d="M56.65,40.05c5.12,0,7.92,2.62,7.92,7.55,0,2.78-.9,4.8-2.59,6.05l2.78,4.8c.22.44.37.87.37,1.28,0,1.18-1.22,2.5-2.74,2.5-.87,0-1.59-.44-2.06-1.28l-3.4-5.83h-11.23v4.71c0,1.53-.9,2.34-2.62,2.34s-2.59-.81-2.59-2.34v-7.24c0-1.68.78-2.56,2.31-2.56h13.85c1.84,0,2.71-.84,2.71-2.43s-.87-2.5-2.71-2.5h-13.97c-1.53,0-2.31-.84-2.31-2.53s.78-2.53,2.31-2.53h13.97Z"/>
+          <path class="cls-1" d="M71.71,59.82c0,1.53-.9,2.34-2.62,2.34s-2.59-.81-2.59-2.34v-17.71c0-1.53.87-2.34,2.62-2.34s2.59.81,2.59,2.34v17.71Z"/>
+          <path class="cls-1" d="M96.73,40.05c1.53,0,2.31.84,2.31,2.53s-.78,2.53-2.31,2.53h-11.13c-4.4,0-6.49,2.06-6.49,5.86s2.09,5.86,6.49,5.86h8.45v-3.56h-7.98c-1.47,0-2.21-.81-2.21-2.43s.75-2.43,2.21-2.43h10.85c1.47,0,2.21.84,2.21,2.43v8.67c0,1.37-.84,2.37-2.31,2.37h-11.45c-7.39,0-11.48-3.77-11.48-10.92s4.09-10.92,11.48-10.92h11.35Z"/>
+          <path class="cls-1" d="M121.92,40.05c1.53,0,2.31.84,2.31,2.53s-.78,2.53-2.31,2.53h-15.16v3.27h15c1.47,0,2.21.84,2.21,2.46s-.75,2.43-2.21,2.43h-15v3.56h15.22c1.53,0,2.31.84,2.31,2.53s-.78,2.53-2.31,2.53h-18.06c-1.53,0-2.31-.84-2.31-2.53v-16.78c0-1.68.78-2.53,2.31-2.53h18Z"/>
+          <path class="cls-1" d="M145.87,53.9v-11.79c0-1.53.9-2.34,2.59-2.34s2.62.81,2.62,2.34v17.71c0,1.62-.87,2.34-2.62,2.34-1,0-1.68-.25-2.34-.84l-14.63-13.82v12.32c0,1.53-.9,2.34-2.62,2.34s-2.59-.81-2.59-2.34v-17.71c0-1.62.87-2.34,2.84-2.34,1.31,0,2.12.31,2.96,1.12l13.79,13.01Z"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg></a>
+    <button class="boton abrir-menu" aria-expanded="false" aria-controls="enlaces">Menú</button>
+    <ul class="enlaces" id="enlaces">
+      <li><a href="#agenda">Agenda</a></li>
+      <li><a href="#juegos">Juegos</a></li>
+      <li><a href="#liga">Liga</a></li>
+      <li><a href="#llegar">Cómo llegar</a></li>
+      <li><a href="#tienda">Tienda online</a></li>
+    </ul>
+    <a class="boton boton-neon" href="#agenda">Ver qué se juega</a>
+  </div>
+</header>
+
+<main id="inicio">
+  <section class="portada" aria-label="Origen">
+    <div class="ancho">
+      <article class="carta">
+        <div class="carta-cabeza">
+          <h1>Origen</h1>
+          <span class="coste" title="Carrer Ample, número 65">65</span>
+        </div>
+        <div class="arte">
+          <img src="assets/fachada-origen.jpg" width="1200" height="1600" alt="La fachada de Origen en Carrer Ample: rótulo azul noche con el nombre en neón rosa y escaparates con carteles de Pokémon, Riftbound y Magic">
+        </div>
+        <div class="linea-tipo"><span>Tienda de cartas y juegos de mesa</span><span>Carrer Ample 65, Terrassa</span></div>
+        <div class="caja-texto">
+          <p>Torneos cada semana de diez juegos, mesas libres todo el horario y, si no tienes mazo, te prestamos uno.</p>
+          <p class="estado" id="estado">Abierto ahora</p>
+          <div class="portada-acciones">
+            <a class="boton boton-noche" href="#agenda">Ver qué se juega</a>
+            <a class="boton boton-papel" href="#llegar">Cómo llegar</a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="agenda" id="agenda" aria-labelledby="titulo-agenda">
+    <div class="ancho agenda-rejilla">
+      <div>
+        <div class="palabra entra">
+          <h2 id="titulo-agenda">Agenda</h2>
+          <p class="agenda-intro">Torneos, ligas y presentaciones de este mes. Pulsa un evento para ver la inscripción y los premios.</p>
+        </div>
+        <div class="filtros">
+          <div class="fila-filtro" role="group" aria-label="Filtrar por juego"><span>Juego</span><span id="filtro-juego" style="display:contents"></span></div>
+          <div class="fila-filtro" role="group" aria-label="Filtrar por tipo"><span>Tipo</span><span id="filtro-tipo" style="display:contents"></span></div>
+        </div>
+        <div class="navegar">
+          <button class="flecha" id="mes-ant" aria-label="Mes anterior">‹</button>
+          <h3 id="mes-nombre" aria-live="polite">Noviembre 2026</h3>
+          <button class="flecha" id="mes-sig" aria-label="Mes siguiente">›</button>
+          <div class="vistas" role="group" aria-label="Vista">
+            <button id="ver-lista" aria-pressed="true">Lista</button>
+            <button id="ver-mes" aria-pressed="false">Mes</button>
+          </div>
+        </div>
+        <div id="calendario"></div>
+      </div>
+
+      <aside class="proxima" aria-labelledby="titulo-proxima">
+        <h3 id="titulo-proxima">Tu próxima partida</h3>
+        <label class="oculto" for="elige-juego">Elige tu juego</label>
+        <select id="elige-juego"></select>
+        <div id="carta-proxima" aria-live="polite">
+          <p>Los martes 4fun de Riftbound, los miércoles Offmeta de One Piece, los jueves Liga Pokémon y los fines de semana torneos semanales de casi todo.</p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="juegos bloque" id="juegos" aria-labelledby="titulo-juegos">
+    <div class="ancho juegos-rejilla">
+      <div class="entra">
+        <h2 id="titulo-juegos">Diez juegos, una mesa</h2>
+        <p>Lo que se juega aquí y en qué formatos. Si el tuyo no aparece, pregúntalo en la tienda: montamos lo que pida la gente.</p>
+      </div>
+      <div class="hoja" id="hoja-juegos"></div>
+    </div>
+  </section>
+
+  <section class="bloque" id="liga" aria-labelledby="titulo-liga">
+    <div class="ancho liga-rejilla" id="liga-contenido"></div>
+  </section>
+
+  <section class="origen" aria-labelledby="titulo-origen">
+    <div class="ancho">
+      <h2 id="titulo-origen" class="oculto">Por qué Origen</h2>
+      <figure>
+        <img id="baraja" src="assets/the-cloisters-playing-cards.jpg" width="1600" height="964" loading="lazy" alt="Las 52 cartas de la baraja de los Claustros, pintadas a mano hacia 1475: reyes, reinas y sotas, y palos de lazos, collares, cuernos y correas">
+      </figure>
+      <div class="origen-texto entra">
+        <div>
+          <p>La baraja completa más antigua que se conserva se pintó a mano hacia 1475. La idea no ha cambiado: una mesa, unas cartas y gente con ganas de jugar.</p>
+          <p class="credito">Baraja de los Claustros y su rey de cuernos, Países Bajos del Sur, hacia 1475–80, The Met (dominio público). Al lado, Une partie de cartes, la primera película de Georges Méliès, 1896 (dominio público).</p>
+        </div>
+        <video class="pelicula" autoplay muted loop playsinline preload="metadata" poster="assets/playing-cards-1896-poster.jpg" width="640" height="480" aria-label="Fragmento de Une partie de cartes, de Méliès, 1896: cuatro hombres juegan a cartas en un jardín"><source src="assets/playing-cards-1896.webm" type="video/webm"></video>
+        <img class="rey" src="assets/king-of-horns-from-the-cloisters-playing.jpg" width="800" height="1326" loading="lazy" alt="El rey de cuernos de la baraja de los Claustros: un rey con capa roja, corona y un cetro con un cuerno de caza">
+      </div>
+    </div>
+  </section>
+
+  <section class="llegar" id="llegar" aria-labelledby="titulo-llegar">
+    <div class="llegar-rejilla">
+      <div class="lamina">
+        <div class="lamina-marco">
+          <iframe id="lamina-mapa" title="Mapa de Origen, Carrer Ample 65, Terrassa" loading="lazy" src="https://www.google.com/maps?q=Carrer+Ample+65,+08225+Terrassa&output=embed"></iframe>
+          <img id="lamina-tren" hidden src="assets/terrassa-estacio-del-nord-2022.jpg" width="1400" height="788" loading="lazy" alt="Andenes de la estación de Terrassa Estació del Nord, a ocho minutos a pie de la tienda">
+        </div>
+      </div>
+      <div class="llegar-texto">
+        <div class="pestanas" role="tablist" aria-label="Cómo llegar">
+          <button role="tab" id="tab-mapa" aria-selected="true" aria-controls="panel-mapa">Mapa</button>
+          <button role="tab" id="tab-tren" aria-selected="false" aria-controls="panel-tren">En tren</button>
+          <button role="tab" id="tab-bus" aria-selected="false" aria-controls="panel-bus">En bus</button>
+          <button role="tab" id="tab-pie" aria-selected="false" aria-controls="panel-pie">A pie</button>
+        </div>
+        <div>
+          <h2 id="titulo-llegar">Carrer Ample 65</h2>
+          <div class="panel" role="tabpanel" id="panel-mapa" aria-labelledby="tab-mapa"><p>En el centro de Terrassa, 08225. Mesas abiertas todo el horario: pásate cuando quieras, aunque no haya torneo.</p></div>
+          <div class="panel" role="tabpanel" id="panel-tren" aria-labelledby="tab-tren" hidden><p>Bájate en Terrassa Estació del Nord, con la R4 de Rodalies o la S1 de FGC. Desde allí son 8 minutos andando.</p></div>
+          <div class="panel" role="tabpanel" id="panel-bus" aria-labelledby="tab-bus" hidden><ul><li>Parada Estació del Nord, a 550 m: líneas 2, 3, 6, 7 y H; e2.1 y e2.2 desde Barcelona; M8A y M8D desde Matadepera.</li><li>Parada Camí de Castellar, a 450 m: líneas 6, 8 y 9.</li></ul></div>
+          <div class="panel" role="tabpanel" id="panel-pie" aria-labelledby="tab-pie" hidden><ul><li>Desde Estació del Nord, 8 minutos (550 m).</li><li>Desde Terrassa Rambla, 25 minutos (2 km).</li></ul></div>
+        </div>
+        <div class="acciones-llegar">
+          <a class="boton boton-noche" href="https://www.google.com/maps/dir/?api=1&destination=Carrer%20Ample%2065%2C%2008225%20Terrassa" target="_blank" rel="noopener">Cómo llegar</a>
+          <a class="boton boton-papel" href="https://www.google.com/maps/search/?api=1&query=Carrer%20Ample%2065%2C%2008225%20Terrassa" target="_blank" rel="noopener">Abrir en Maps</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="horario bloque" aria-labelledby="titulo-horario">
+    <div class="ancho">
+      <div class="cupon">
+        <div>
+          <h2 id="titulo-horario">Martes a domingo</h2>
+          <p>Abrimos mañana y tarde. Los lunes, cerrado.</p>
+        </div>
+        <div><table class="tabla-horario"><tbody id="horario"></tbody></table></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="respuesta" id="tienda" aria-labelledby="titulo-tienda">
+    <div class="ancho respuesta-rejilla">
+      <div class="comunidad entra">
+        <p>Resultados de los torneos, fotos y sobres nuevos, en nuestras redes.</p>
+        <ul class="redes">
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">YouTube</a></li>
+          <li><a href="#">TikTok</a></li>
+          <li><a href="#">X</a></li>
+        </ul>
+      </div>
+      <div class="carta-respuesta">
+        <h2 id="titulo-tienda">La tienda online ya está abierta</h2>
+        <p>Singles, sobres, mazos, accesorios y juegos de mesa. Te lo enviamos a casa o lo recoges gratis en la tienda.</p>
+        <a class="boton boton-noche" href="/tienda">Ir a la tienda online</a>
+      </div>
+    </div>
+  </section>
+</main>
+</div>
+
+<footer class="reverso">
+  <div class="ancho">
+    <div class="postal">
+      <div class="mensaje">
+        <h2>Nos vemos en la mesa</h2>
+        <p>Trae tu mazo o pide uno prestado. Precios claros, café decente y gente que viene a jugar, no a especular.</p>
+      </div>
+      <address class="direccion">
+        <div class="sello"><img src="assets/partida-de-naipes-jose-dominguez-becquer.jpg" width="1400" height="1062" loading="lazy" alt="Detalle de Partida de naipes, de José Domínguez Bécquer: unos hombres juegan a cartas en la calle"></div>
+        <a href="https://www.google.com/maps/search/?api=1&query=Carrer%20Ample%2065%2C%2008225%20Terrassa" target="_blank" rel="noopener">Carrer Ample 65</a>
+        <span>08225 Terrassa</span>
+        <a href="/tienda">Tienda online</a>
+        <a href="#">Instagram</a>
+      </address>
+      <div class="imprenta">
+        <span>© 2026 Origen. Fotos: fachada, de Origen; Estació del Nord, por 9pm (CC BY-SA 4.0); Partida de naipes, de José Domínguez Bécquer, foto de Jl FilpoC (CC BY-SA 4.0); baraja de los Claustros, The Met (CC0); Une partie de cartes, Méliès, 1896 (dominio público).</span>
+        <nav aria-label="Legal"><a href="#">Aviso legal</a><a href="#">Privacidad</a><a href="#">Cookies</a><a href="#">Condiciones de venta</a><a href="#">Envíos y devoluciones</a></nav>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<dialog id="detalle" aria-labelledby="detalle-nombre"></dialog>
+
+<script>
+const DATOS = [{"events": [{"id": "77522270-a488-4bd5-a719-eb612a07a43b", "date": "2026-09-26", "time": "09:30", "title": "Vilemaw's Cup - Especial Inauguración Origen", "game": "rift", "type": "tournament", "price": 25, "meta": "Vilemaw's Cup 4"}, {"id": "e0e8cc4d-58d3-4212-980e-c6659b16e401", "date": "2026-09-26", "time": "17:15", "title": "Set Championship Attack of the Vine", "game": "lorc", "type": "tournament", "price": 7, "meta": "Sobre por participar + promos y tapete de premio"}, {"id": "9c52fb00-0337-4856-a978-5e20533c846e", "date": "2026-10-03", "time": "10:00", "title": "Torneo semanal Riftbound", "game": "rift", "type": "tournament", "price": 6, "meta": "Picking"}, {"id": "e1f43b52-47d3-43fd-8300-242c65908995", "date": "2026-10-03", "time": "10:30", "title": "Torneo semanal Digimon", "game": "digi", "type": "tournament", "price": 6, "meta": "Picking EX13"}, {"id": "1940afd1-fc4d-43fb-90fc-fe81de930ee1", "date": "2026-10-04", "time": "16:00", "title": "Presentación Mundos de Origen", "game": "swu", "type": "prerelease", "price": 30, "meta": "Sobre por ronda ganada + 1 carbonite si 3-0"}, {"id": "325aa4c5-fb93-4d3f-9e1e-d25e9dba03e1", "date": "2026-10-04", "time": "10:30", "title": "Presentación Beyond the Brave ", "game": "ygo", "type": "prerelease", "price": 20, "meta": "Tapete para ganador + Sorteos"}, {"id": "852f892f-918c-4fb7-a58b-d9d545841937", "date": "2026-10-04", "time": "10:30", "title": "Torneo semanal One Piece", "game": "op", "type": "tournament", "price": 6, "meta": "Picking OP15"}, {"id": "3fbe88d7-7c19-4db1-9b13-d255caee7320", "date": "2026-10-17", "time": "16:30", "title": "Presentación Hyperia City", "game": "lorc", "type": "prerelease", "price": 40, "meta": "2 sobres por participar + sorteo tapete"}, {"id": "c0e3b39a-3297-4585-bb05-4066bf26e4c4", "date": "2026-10-17", "time": "10:00", "title": "Pre-Rift Radiance", "game": "rift", "type": "prerelease", "price": 30, "meta": "Sobre por ronda ganada (3 rondas)"}, {"id": "6fd0afcc-5124-4bb7-aa07-d72e45581ad5", "date": "2026-10-18", "time": "16:30", "title": "Pre-Rift Radiance", "game": "rift", "type": "prerelease", "price": 30, "meta": "Sobre por ronda ganada (3 rondas)"}, {"id": "b44c2176-7240-48f1-8583-0c3769e3000d", "date": "2026-11-03", "time": "18:00", "title": "Torneo 4fun Riftbound", "game": "rift", "type": "casual", "price": 6, "meta": "Sobre de radiance + Nexus a sorteo"}, {"id": "a7b4e181-148b-4411-bf16-cff631792527", "date": "2026-11-04", "time": "18:00", "title": "Torneo Offmeta One Piece", "game": "op", "type": "tournament", "price": 6, "meta": "Sobre de EB05 + Promos"}, {"id": "39f4f89a-6775-440d-8429-d46657ecf4dc", "date": "2026-11-05", "time": "17:00", "title": "Liga Pokémon", "game": "pkmn", "type": "casual", "price": 0, "meta": "Sobre de liga por venir"}, {"id": "ebab3d1b-264b-49eb-a8b2-514b5ee90f09", "date": "2026-11-05", "time": "18:00", "title": "Torneo 4fun Digimon", "game": "digi", "type": "casual", "price": 6, "meta": "Sobre de EX13 + sobres de torneo"}, {"id": "631113be-69a7-485f-b4e0-070ab2c3b9ef", "date": "2026-11-06", "time": "17:30", "title": "Torneo semanal SWU", "game": "swu", "type": "league", "price": 6, "meta": "2 sobres weekly + 1 carbonite a picking cada 4"}, {"id": "34da41af-a8ad-4656-a982-5b3a6a577ad7", "date": "2026-11-07", "time": "10:00", "title": "3a jornada liga Radiance", "game": "rift", "type": "league", "price": 9, "meta": "6€ sobre a bote // 9€ sobre + liga"}, {"id": "4cd8b791-d109-449d-8b7b-ef00d4ca5bef", "date": "2026-11-07", "time": "17:00", "title": "Torneo semanal Genesys", "game": "ygo", "type": "tournament", "price": 6, "meta": "Sobre por participar + 1 sobre cada 2 de premio"}, {"id": "8f8f1c13-fb58-499a-b177-c8d56b11dc03", "date": "2026-11-07", "time": "17:00", "title": "Torneo semanal Lorcana", "game": "lorc", "type": "tournament", "price": 6, "meta": "Sobre de Hyperia City + 1 sobre extra para el ganador"}, {"id": "b72ed745-b74b-4cb2-83d1-8019abc5e61a", "date": "2026-11-07", "time": "10:30", "title": "Torneo semanal Digimon", "game": "digi", "type": "tournament", "price": 6, "meta": "Sobre de EX13 a picking + 2 sobres de torneo"}, {"id": "570ee0c1-fca8-4421-a263-2e1ba2d5cb81", "date": "2026-11-08", "time": "10:30", "title": "Torneo semanal One Piece", "game": "op", "type": "tournament", "price": 6, "meta": "Sobre de EB05 a picking + Promos"}, {"id": "5fa15d1e-ee96-4ddd-ae70-c4959eed9645", "date": "2026-11-08", "time": "10:30", "title": "Torneo semanal Yugioh", "game": "ygo", "type": "tournament", "price": 6, "meta": "Sobre por participar + 1 sobre cada 2 de premio"}, {"id": "49649955-cc0e-4e5b-90cf-186239084c89", "date": "2026-11-12", "time": "18:00", "title": "Torneo Offmeta One Piece", "game": "op", "type": "tournament", "price": 6, "meta": "Sobre de EB05 + Promos"}, {"id": "872249d4-9e9d-47f7-a599-74cf583f0fe8", "date": "2026-11-12", "time": "18:00", "title": "Torneo 4fun Riftbound", "game": "rift", "type": "casual", "price": 6, "meta": "Sobre de radiance + Nexus a sorteo"}, {"id": "c1e8b221-a446-47ca-919e-02d46351b11c", "date": "2026-11-12", "time": "17:00", "title": "Liga Pokémon", "game": "pkmn", "type": "casual", "price": 0, "meta": "Sobre de liga por venir"}, {"id": "2cdf565d-e230-4a56-8606-f0684d617614", "date": "2026-11-13", "time": "17:30", "title": "Torneo semanal Pokémon", "game": "pkmn", "type": "tournament", "price": 6, "meta": "Sobre a picking por persona"}, {"id": "d20e7a57-9cfa-41be-bea7-84b20873750d", "date": "2026-11-13", "time": "17:30", "title": "Torneo semanal SWU", "game": "swu", "type": "league", "price": 6, "meta": "2 sobres weekly + 1 carbonite a picking cada 4"}, {"id": "0a4100c4-c4fe-4086-a0de-c3f1ecfd499e", "date": "2026-11-14", "time": "17:00", "title": "Presentación Magnificent Maestros", "game": "ygo", "type": "prerelease", "price": 7, "meta": "Sobre + Tapetes a premio y sorteo"}, {"id": "18fd9ebd-d868-40e2-b630-2af8118ee192", "date": "2026-11-14", "time": "17:00", "title": "Torneo semanal Lorcana", "game": "lorc", "type": "tournament", "price": 6, "meta": "Sobre de Hyperia City + 1 sobre extra para el ganador"}, {"id": "f85a513f-2741-4017-808b-fa5c962a2a26", "date": "2026-11-14", "time": "10:30", "title": "Torneo semanal Digimon", "game": "digi", "type": "tournament", "price": 6, "meta": "Sobre de EX13 a picking + 2 sobres de torneo"}, {"id": "fa2581ba-f94c-4643-99a6-a1155e69cd1d", "date": "2026-11-14", "time": "10:00", "title": "4a jornada liga Radiance", "game": "rift", "type": "league", "price": 9, "meta": "6€ sobre a bote // 9€ sobre + liga"}, {"id": "03a30511-29ff-43b3-8f56-55a9115f623e", "date": "2026-11-15", "time": "10:30", "title": "Torneo semanal One Piece", "game": "op", "type": "tournament", "price": 6, "meta": "Sobre de EB05 a picking + Promos"}, {"id": "9bd4e2ba-825c-4650-aba9-8b25454a3e53", "date": "2026-11-15", "time": "10:30", "title": "1ª Jornada Battle City League", "game": "ygo", "type": "league", "price": 8, "meta": "5€ a sobres de premio + 3€ al bote de liga"}, {"id": "bd429825-981f-4536-b88d-6d74464bc623", "date": "2026-11-17", "time": "18:00", "title": "Torneo 4fun Riftbound", "game": "rift", "type": "casual", "price": 6, "meta": "Sobre de radiance + Nexus a sorteo"}, {"id": "75bbbff5-7fc8-429a-806c-25757b28c7e1", "date": "2026-11-18", "time": "18:00", "title": "Torneo Offmeta One Piece", "game": "op", "type": "tournament", "price": 6, "meta": "Sobre de EB05 + Promos"}, {"id": "0b574744-eea2-4c20-bb1f-024b61f1f6c6", "date": "2026-11-19", "time": "17:00", "title": "Liga Pokémon", "game": "pkmn", "type": "casual", "price": 0, "meta": "Sobre de liga por venir"}, {"id": "468e9e1f-f8f9-49cb-82e0-657ccb92428a", "date": "2026-11-19", "time": "18:00", "title": "Torneo 4fun Digimon", "game": "digi", "type": "casual", "price": 6, "meta": "Sobre de EX13 + sobres de torneo"}, {"id": "0e081032-f740-4e7f-a854-29c21059fff8", "date": "2026-11-20", "time": "17:30", "title": "Torneo semanal Pokémon", "game": "pkmn", "type": "tournament", "price": 6, "meta": "Sobre a picking por persona"}, {"id": "1e4f8289-cab8-4deb-b73f-1cec756187b0", "date": "2026-11-20", "time": "17:30", "title": "Torneo semanal SWU", "game": "swu", "type": "league", "price": 6, "meta": "2 sobres weekly + 1 carbonite a picking cada 4"}, {"id": "d6728676-e244-481e-a181-1f008436c796", "date": "2026-11-21", "time": "10:00", "title": "Vilemaw's Cup V - Origen", "game": "rift", "type": "tournament", "price": 35, "meta": "Entradas disponibles en nuestra tienda"}], "games": [{"id": "op", "name": "One Piece Card Game", "color": "#d72d2d", "formats": ["Standard", "Sealed", "Extra regulation"]}, {"id": "digi", "name": "Digimon Card Game", "color": "#ff7a1a", "formats": ["Standard", "Sealed"]}, {"id": "gundam", "name": "Gundam Card Game", "color": "#3b6fe2", "formats": ["Standard", "Sealed"]}, {"id": "mtg", "name": "Magic: The Gathering", "color": "#d3b15a", "formats": ["Commander", "Modern", "Pauper", "Draft", "Sealed"]}, {"id": "rift", "name": "Riftbound", "color": "#37b6a6", "formats": ["Standard", "Sealed"]}, {"id": "swu", "name": "Star Wars Unlimited", "color": "#7a9bff", "formats": ["Standard", "Sealed", "Draft"]}, {"id": "ygo", "name": "Yu-Gi-Oh", "color": "#6e35b1", "formats": ["Advanced", "Sealed", "Genesys"]}, {"id": "pkmn", "name": "Pokémon", "color": "#ffcb05", "formats": ["Standard", "Sealed"]}, {"id": "lorc", "name": "Lorcana", "color": "#E366D9", "formats": ["Standard", "Sealed"]}, {"id": "board", "name": "Juegos de mesa", "color": "#00e6e6", "formats": ["Mesa libre", "Demos guiadas"]}], "types": [{"id": "tournament", "name": "Torneo", "color": "#ff1a8a"}, {"id": "league", "name": "Liga", "color": "#00e6e6"}, {"id": "prerelease", "name": "Prerelease", "color": "#85d3b5"}, {"id": "demo", "name": "Demo", "color": "#ffcf3a"}, {"id": "casual", "name": "Casual", "color": "#c8c8d4"}], "today": "2026-11-13"}, {"leagues": [{"id": "da69e54d-b92b-455d-b506-001a24782282", "title": "Liga Homeworlds - Origen ", "game": "swu", "endDate": "2027-01-29", "rules": "La liga durará hasta la presentación del siguiente set.\nVictoria: 3 puntos.\nEmpate: 1 punto.\nPremio: Presentación gratis para el primer clasificado.\nSi llegamos a 20 participantes: Premio para los 2 primeros.\nSi juegas los 2 torneos semanales: Solo contará el torneo en el que hayas conseguido más puntos.", "discardWorst": 0, "rounds": 3, "rows": [{"position": 1, "name": "hansen74", "points": 21, "played": 3}, {"position": 2, "name": "YENAXS", "points": 18, "played": 3}, {"position": 3, "name": "Hidra", "points": 15, "played": 3}, {"position": 4, "name": "DosGrajos_REBELS", "points": 15, "played": 2}, {"position": 5, "name": "Urbano21", "points": 12, "played": 2}, {"position": 6, "name": "Kulham", "points": 9, "played": 2}, {"position": 7, "name": "Urbano17", "points": 6, "played": 2}, {"position": 8, "name": "Grauu18", "points": 6, "played": 1}, {"position": 9, "name": "Mondagh", "points": 3, "played": 2}]}], "games": [{"id": "op", "name": "One Piece Card Game", "color": "#d72d2d", "formats": ["Standard", "Sealed", "Extra regulation"]}, {"id": "digi", "name": "Digimon Card Game", "color": "#ff7a1a", "formats": ["Standard", "Sealed"]}, {"id": "gundam", "name": "Gundam Card Game", "color": "#3b6fe2", "formats": ["Standard", "Sealed"]}, {"id": "mtg", "name": "Magic: The Gathering", "color": "#d3b15a", "formats": ["Commander", "Modern", "Pauper", "Draft", "Sealed"]}, {"id": "rift", "name": "Riftbound", "color": "#37b6a6", "formats": ["Standard", "Sealed"]}, {"id": "swu", "name": "Star Wars Unlimited", "color": "#7a9bff", "formats": ["Standard", "Sealed", "Draft"]}, {"id": "ygo", "name": "Yu-Gi-Oh", "color": "#6e35b1", "formats": ["Advanced", "Sealed", "Genesys"]}, {"id": "pkmn", "name": "Pokémon", "color": "#ffcb05", "formats": ["Standard", "Sealed"]}, {"id": "lorc", "name": "Lorcana", "color": "#E366D9", "formats": ["Standard", "Sealed"]}, {"id": "board", "name": "Juegos de mesa", "color": "#00e6e6", "formats": ["Mesa libre", "Demos guiadas"]}]}, {}];
+const EVENTOS = DATOS[0].events;
+const LIGAS = DATOS[1].leagues;
+const JUEGOS = DATOS[1].games;
+const JUEGO = Object.fromEntries(JUEGOS.map(j => [j.id, j]));
+const TIPOS = { tournament: "Torneo", league: "Liga", prerelease: "Presentación", demo: "Demo", casual: "Casual" };
+const DIAS = ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"];
+const MESES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+// Horario por día de la semana (0 = lunes); null = cerrado
+const HORARIO = [null, ...Array(4).fill([["10:30","13:30"],["16:30","20:30"]]), ...Array(2).fill([["10:00","14:00"],["16:00","20:30"]])];
+
+const $ = s => document.querySelector(s);
+const may = s => s.charAt(0).toUpperCase() + s.slice(1);
+const iso = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const diaSemana = d => (d.getDay() + 6) % 7;
+const fecha = k => new Date(k + "T12:00");
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const ordenar = l => l.slice().sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
+const precio = e => e.price ? `${e.price} €` : "Gratis";
+const hoy = new Date();
+const HOY = iso(hoy);
+// Texto blanco o azul noche sobre el color de cada juego, el que tenga más contraste
+const sobre = hex => { const c = hex.match(/\w\w/g).map(x => { const v = parseInt(x, 16) / 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); const L = 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; return (L + 0.05) / 0.0601 > 1.05 / (L + 0.05) ? "#0e153f" : "#ffffff"; };
+const juegoDe = e => JUEGO[e.game] || { name: e.game, color: "#c8c8d4" };
+
+// Cada evento es una carta: coste = inscripción, arte = color del juego, caja de texto = premios
+function cartaEvento(e, extra = "") {
+  const j = juegoDe(e), d = fecha(e.date);
+  return `<article class="carta carta-evento" style="--juego:${j.color};--sobre-juego:${sobre(j.color)}">
+    <div class="carta-cabeza"><span class="nombre" id="detalle-nombre">${esc(e.title)}</span><span class="coste">${e.price ? e.price + "€" : "0€"}</span></div>
+    <div class="arte"><span>${esc(j.name)}</span><strong>${may(DIAS[diaSemana(d)])} ${d.getDate()} de ${MESES[d.getMonth()]}, ${e.time}</strong></div>
+    <div class="linea-tipo"><span>${TIPOS[e.type] || e.type}</span><span>Inscripción ${precio(e)}</span></div>
+    <div class="caja-texto">
+      <p>${e.meta ? esc(e.meta) : "Pregunta en la tienda por los premios."}</p>
+      <p>Apúntate en la tienda o el mismo día, antes de empezar.</p>
+      ${extra}
+    </div>
+  </article>`;
+}
+
+// Agenda
+const estado = { juego: "todos", tipo: "todos", vista: "lista", anio: hoy.getFullYear(), mes: hoy.getMonth() };
+function chips(caja, opciones, clave) {
+  caja.innerHTML = opciones.map(([v, t, color]) => `<button class="chip" aria-pressed="${estado[clave] === v}" data-v="${v}" ${color ? `style="--juego:${color}"` : ""}>${color ? '<span class="punto"></span>' : ""}${esc(t)}</button>`).join("");
+  caja.onclick = ev => { const b = ev.target.closest(".chip"); if (!b) return; estado[clave] = b.dataset.v; pintarFiltros(); pintarCalendario(); };
+}
+function pintarFiltros() {
+  chips($("#filtro-juego"), [["todos", "Todos"], ...JUEGOS.map(j => [j.id, j.name.replace(" Card Game", "").replace(": The Gathering", ""), j.color])], "juego");
+  chips($("#filtro-tipo"), [["todos", "Todos"], ...Object.entries(TIPOS)], "tipo");
+}
+const filtrados = () => EVENTOS.filter(e => (estado.juego === "todos" || e.game === estado.juego) && (estado.tipo === "todos" || e.type === estado.tipo));
+const filaEvento = e => `<button class="evento" data-id="${e.id}" style="--juego:${juegoDe(e).color}"><span class="hora">${e.time}</span><span class="titulo"><span class="punto"></span>${esc(e.title)}</span><span class="precio">${precio(e)}</span></button>`;
+
+function pintarCalendario() {
+  $("#mes-nombre").textContent = `${may(MESES[estado.mes])} ${estado.anio}`;
+  $("#ver-mes").setAttribute("aria-pressed", estado.vista === "mes");
+  $("#ver-lista").setAttribute("aria-pressed", estado.vista === "lista");
+  const prefijo = `${estado.anio}-${String(estado.mes + 1).padStart(2, "0")}`;
+  // En la lista del mes en curso, lo que ya pasó no aporta: empieza en hoy
+  const desdeHoy = estado.vista === "lista" && HOY.startsWith(prefijo);
+  const evs = ordenar(filtrados().filter(e => e.date.startsWith(prefijo) && (!desdeHoy || e.date >= HOY)));
+  const caja = $("#calendario");
+  if (!evs.length) {
+    caja.innerHTML = `<div class="vacio"><p>No hay eventos con estos filtros en ${MESES[estado.mes]}${desdeHoy ? " a partir de hoy" : ""}.</p><button class="boton boton-papel" id="limpiar">Ver todos los juegos</button></div>`;
+    $("#limpiar").onclick = () => { estado.juego = estado.tipo = "todos"; pintarFiltros(); pintarCalendario(); };
+    return;
+  }
+  if (estado.vista === "lista") {
+    const porDia = {};
+    evs.forEach(e => (porDia[e.date] ||= []).push(e));
+    caja.innerHTML = `<div class="dias">${Object.entries(porDia).map(([k, l], i) => {
+      const d = fecha(k);
+      return `<details class="dia ${k === HOY ? "hoy" : ""}" ${i === 0 ? "open" : ""} style="animation-delay:${Math.min(i, 8) * 50}ms">
+        <summary>${may(DIAS[diaSemana(d)])} ${d.getDate()} ${k === HOY ? '<span class="marca-hoy">Hoy</span>' : ""}<span class="cuantos">${l.length} ${l.length === 1 ? "evento" : "eventos"}</span></summary>
+        <div class="eventos">${l.map(filaEvento).join("")}</div>
+      </details>`;
+    }).join("")}</div>`;
+    return;
+  }
+  const primero = new Date(estado.anio, estado.mes, 1);
+  const inicio = new Date(primero); inicio.setDate(1 - diaSemana(primero));
+  let filas = "", fila = "";
+  for (let i = 0; i < 42; i++) {
+    const d = new Date(inicio); d.setDate(inicio.getDate() + i);
+    if (i % 7 === 0 && i >= 35 && d.getMonth() !== estado.mes) break;
+    const k = iso(d), fuera = d.getMonth() !== estado.mes;
+    const del = fuera ? [] : evs.filter(e => e.date === k);
+    fila += `<td class="${fuera ? "fuera" : ""} ${k === HOY ? "hoy" : ""}"><span class="num">${fuera ? "" : d.getDate()}</span>${del.map(e => `<button class="mini" data-id="${e.id}" style="--juego:${juegoDe(e).color}" aria-label="${e.time}, ${esc(e.title)}">${e.time} ${esc(e.title)}</button>`).join("")}</td>`;
+    if (i % 7 === 6) { filas += `<tr>${fila}</tr>`; fila = ""; }
+  }
+  caja.innerHTML = `<table class="mes"><thead><tr>${["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"].map(n => `<th scope="col">${n}</th>`).join("")}</tr></thead><tbody>${filas}</tbody></table>`;
+}
+$("#mes-ant").onclick = () => { if (--estado.mes < 0) { estado.mes = 11; estado.anio--; } pintarCalendario(); };
+$("#mes-sig").onclick = () => { if (++estado.mes > 11) { estado.mes = 0; estado.anio++; } pintarCalendario(); };
+$("#ver-mes").onclick = () => { estado.vista = "mes"; pintarCalendario(); };
+$("#ver-lista").onclick = () => { estado.vista = "lista"; pintarCalendario(); };
+
+// Detalle de un evento, desde cualquier fila de la página
+document.addEventListener("click", ev => {
+  const b = ev.target.closest("[data-id]"); if (!b) return;
+  const e = EVENTOS.find(x => x.id === b.dataset.id); if (!e) return;
+  $("#detalle").innerHTML = cartaEvento(e, `<button class="boton boton-noche cerrar" id="cerrar-detalle">Cerrar</button>`);
+  $("#cerrar-detalle").onclick = () => $("#detalle").close();
+  $("#detalle").showModal();
+});
+$("#detalle").addEventListener("click", ev => { if (ev.target === ev.currentTarget) ev.currentTarget.close(); });
+
+// Tu próxima partida: elige juego y sale su próxima carta, con la cuenta atrás
+function pintarProxima() {
+  const id = $("#elige-juego").value;
+  const ahora = new Date();
+  const e = ordenar(EVENTOS.filter(x => x.game === id && new Date(`${x.date}T${x.time}`) > ahora))[0];
+  const j = JUEGO[id];
+  if (!e) { $("#carta-proxima").innerHTML = `<div class="vacio"><p>Ahora mismo no hay fechas de ${esc(j.name)} en el calendario. Pregunta en la tienda: si hay gente, se monta.</p></div>`; return; }
+  const min = Math.round((new Date(`${e.date}T${e.time}`) - ahora) / 60000);
+  const falta = min < 60 ? `Empieza en ${min} minutos` : min < 1440 ? `Empieza en ${Math.floor(min / 60)} h y ${min % 60} min` : `Faltan ${Math.floor(min / 1440)} ${Math.floor(min / 1440) === 1 ? "día" : "días"}`;
+  $("#carta-proxima").innerHTML = cartaEvento(e, `<p class="cuenta">${falta}</p>`);
+}
+$("#elige-juego").innerHTML = JUEGOS.map(j => `<option value="${j.id}">${esc(j.name)}</option>`).join("");
+$("#elige-juego").value = "op";
+$("#elige-juego").onchange = pintarProxima;
+
+// Juegos: la hoja con línea de puntos hasta la próxima fecha, que lleva a la agenda filtrada
+function pintarJuegos() {
+  const proxima = id => ordenar(EVENTOS.filter(e => e.game === id && e.date >= HOY))[0];
+  const item = j => {
+    const p = proxima(j.id);
+    const valor = p ? `<a href="#agenda" data-juego="${j.id}">${may(DIAS[diaSemana(fecha(p.date))]).slice(0, 3)} ${fecha(p.date).getDate()}, ${p.time}</a>` : `<span>Pregunta en tienda</span>`;
+    return `<li style="--juego:${j.color}"><div class="item-linea"><span class="punto"></span><span>${esc(j.name)}</span><span class="relleno"></span>${valor}</div><p class="formatos">${j.formats.join(", ")}</p></li>`;
+  };
+  $("#hoja-juegos").innerHTML = `<h3>Cartas coleccionables</h3><ul>${JUEGOS.filter(j => j.id !== "board").map(item).join("")}</ul><h3>Juegos de mesa</h3><ul>${JUEGOS.filter(j => j.id === "board").map(item).join("")}</ul>`;
+  $("#hoja-juegos").addEventListener("click", ev => { const a = ev.target.closest("[data-juego]"); if (!a) return; estado.juego = a.dataset.juego; estado.vista = "lista"; pintarFiltros(); pintarCalendario(); });
+}
+
+// Liga
+function pintarLiga() {
+  const l = LIGAS[0]; if (!l) return;
+  const fin = fecha(l.endDate);
+  $("#liga-contenido").innerHTML = `
+    <div class="entra">
+      <h2 id="titulo-liga">${esc(l.title.replace(/\s*-\s*Origen\s*$/, "").trim())}</h2>
+      <p class="datos">Liga de ${esc(juegoDe(l).name)}. Van ${l.rounds} jornadas y termina el ${fin.getDate()} de ${MESES[fin.getMonth()]} de ${fin.getFullYear()}.</p>
+      <figure class="cuadro"><img src="assets/partida-de-naipes-jose-dominguez-becquer.jpg" width="1400" height="1062" loading="lazy" alt="Partida de naipes, de José Domínguez Bécquer: cinco hombres discuten una jugada sentados en el suelo"><figcaption>Partida de naipes, José Domínguez Bécquer, 1838.</figcaption></figure>
+    </div>
+    <div class="clasificacion">
+      <table><caption class="oculto">Clasificación</caption><thead><tr><th scope="col">#</th><th scope="col">Jugador</th><th scope="col" class="num">Puntos</th><th scope="col" class="num">Jornadas</th></tr></thead>
+      <tbody>${l.rows.map(r => `<tr><td>${r.position}</td><td>${esc(r.name)}</td><td class="num puntos">${r.points}</td><td class="num">${r.played}</td></tr>`).join("")}</tbody></table>
+      <h3>Cómo se puntúa</h3>
+      <ul class="reglas">${l.rules.split("\n").filter(Boolean).map(r => `<li>${esc(r)}</li>`).join("")}</ul>
+    </div>`;
+}
+
+// Horario y "abierto ahora"
+const tramo = t => t.map(([a, b]) => `<span class="tramo">${a}–${b}</span>`).join(" y ");
+function pintarHorario() {
+  $("#horario").innerHTML = DIAS.map((n, i) => `<tr class="${i === diaSemana(hoy) ? "hoy" : ""}"><td>${may(n)}</td><td>${HORARIO[i] ? tramo(HORARIO[i]) : "Cerrado"}</td></tr>`).join("");
+  const t = HORARIO[diaSemana(hoy)], ahora = hoy.toTimeString().slice(0, 5), el = $("#estado");
+  const abierto = t && t.find(([a, b]) => ahora >= a && ahora < b);
+  if (abierto) { el.textContent = `Abierto ahora, hasta las ${abierto[1]}`; return; }
+  el.classList.add("cerrado");
+  const sig = t && t.find(([a]) => ahora < a);
+  el.textContent = sig ? `Cerrado ahora, abrimos a las ${sig[0]}` : "Cerrado ahora";
+}
+
+// Cómo llegar: pestañas que cambian el texto y la lámina
+document.querySelectorAll('[role="tab"]').forEach(tab => tab.addEventListener("click", () => {
+  document.querySelectorAll('[role="tab"]').forEach(t => { const on = t === tab; t.setAttribute("aria-selected", on); $("#" + t.getAttribute("aria-controls")).hidden = !on; });
+  const tren = tab.id === "tab-tren";
+  $("#lamina-tren").hidden = !tren; $("#lamina-mapa").hidden = tren;
+}));
+
+// Menú móvil
+$(".abrir-menu").onclick = ev => { const a = $("#enlaces").classList.toggle("abierto"); ev.currentTarget.setAttribute("aria-expanded", a); };
+$("#enlaces").onclick = ev => { if (ev.target.closest("a")) { $("#enlaces").classList.remove("abierto"); $(".abrir-menu").setAttribute("aria-expanded", false); } };
+
+// Cookies
+try { if (!localStorage.getItem("cookies")) $("#cookies").hidden = false; } catch (e) { $("#cookies").hidden = false; }
+$("#cookies").onclick = ev => { const b = ev.target.closest("[data-cookies]"); if (!b) return; try { localStorage.setItem("cookies", b.dataset.cookies); } catch (e) {} $("#cookies").hidden = true; };
+
+// Entradas por secciones, una sola vez
+const io = new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting) { x.target.classList.add("visto"); io.unobserve(x.target); } }), { threshold: 0.15 });
+// La baraja se desplaza un poco con el scroll
+const baraja = $("#baraja");
+const quieto = matchMedia("(prefers-reduced-motion: reduce)").matches;
+// Con movimiento reducido, la película se queda en su fotograma
+if (quieto) { const v = $(".pelicula"); v.removeAttribute("autoplay"); v.pause(); }
+addEventListener("scroll", () => {
+  if (quieto) return;
+  const r = baraja.getBoundingClientRect();
+  if (r.bottom < 0 || r.top > innerHeight) return;
+  const p = (r.top + r.height / 2 - innerHeight / 2) / innerHeight;
+  baraja.style.transform = `translateX(${p * -4}%) scale(1.06)`;
+}, { passive: true });
+
+pintarFiltros(); pintarCalendario(); pintarProxima(); pintarJuegos(); pintarLiga(); pintarHorario();
+document.querySelectorAll(".entra").forEach(el => io.observe(el));
+</script>
+</body>
+</html>
