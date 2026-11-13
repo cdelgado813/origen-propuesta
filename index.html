@@ -1,0 +1,591 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Origen · Tienda de cartas, torneos y comunidad en Terrassa (mock)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+  /* Tokens: papel frío, tinta violeta oscura y el magenta de la marca, que se reserva para acciones */
+  :root {
+    --papel: #F5F4F8;
+    --blanco: #FFFFFF;
+    --tinta: #1E1A2E;
+    --tinta-suave: #5B5670;
+    --linea: #E2DFEA;
+    --lila: #ECE8F5;
+    --magenta: #D4136F;
+    --magenta-osc: #A80E57;
+    --menta: #0E7C66;
+    --menta-claro: #D7F2E8;
+    --radio-s: 8px;
+    --radio-m: 14px;
+    --display: "Bricolage Grotesque", system-ui, sans-serif;
+    --texto: "Figtree", system-ui, sans-serif;
+    --ancho: 1180px;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 84px; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
+  body { margin: 0; background: var(--papel); color: var(--tinta); font-family: var(--texto); font-size: 1.0625rem; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  img, svg { display: block; }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--magenta); outline-offset: 3px; border-radius: 4px; }
+  .envoltorio { max-width: var(--ancho); margin: 0 auto; padding: 0 24px; }
+  h1, h2, h3 { font-family: var(--display); font-weight: 800; line-height: 1.1; letter-spacing: -0.015em; margin: 0; text-wrap: balance; }
+  h2 { font-size: clamp(1.9rem, 3.4vw, 2.6rem); }
+  h3 { font-size: 1.3rem; font-weight: 600; letter-spacing: -0.005em; }
+  p { margin: 0; max-width: 62ch; }
+  .entradilla { color: var(--tinta-suave); margin-top: 10px; font-size: 1.125rem; }
+
+  /* Botones: misma forma en toda la web, el color dice la jerarquía */
+  .boton { display: inline-flex; align-items: center; gap: 8px; min-height: 46px; padding: 0 20px; border-radius: 999px; font: 700 1rem/1 var(--texto); text-decoration: none; border: 2px solid transparent; cursor: pointer; }
+  .boton-primario { background: var(--magenta); color: #fff; }
+  .boton-primario:hover { background: var(--magenta-osc); }
+  .boton-secundario { background: transparent; border-color: var(--tinta); color: var(--tinta); }
+  .boton-secundario:hover { background: var(--tinta); color: #fff; }
+
+  /* Cabecera */
+  .cabecera { position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--linea); }
+  .cabecera .envoltorio { display: flex; align-items: center; gap: 32px; height: 72px; }
+  .logo { color: var(--tinta); width: 92px; flex: none; }
+  .menu { display: flex; gap: 4px; margin-left: auto; list-style: none; padding: 0; }
+  .menu a { display: block; padding: 8px 12px; border-radius: var(--radio-s); text-decoration: none; font-weight: 500; }
+  .menu a:hover { background: var(--lila); }
+  .abrir-menu { display: none; margin-left: auto; background: none; border: 2px solid var(--tinta); border-radius: 999px; padding: 8px 16px; font: 700 .95rem var(--texto); color: var(--tinta); }
+  @media (max-width: 900px) {
+    .menu { display: none; position: absolute; top: 72px; left: 0; right: 0; flex-direction: column; background: #fff; border-bottom: 1px solid var(--linea); padding: 8px 16px 16px; }
+    .menu.abierto { display: flex; }
+    .menu a { padding: 12px; font-size: 1.1rem; }
+    .abrir-menu { display: block; }
+    .cabecera .boton { display: none; }
+  }
+
+  /* Portada: lo importante es qué se juega esta semana */
+  .portada { padding: 56px 0 72px; }
+  .portada-cabeza { display: grid; grid-template-columns: 1.4fr 1fr; gap: 48px; align-items: end; }
+  .portada h1 { font-size: clamp(2.4rem, 5.2vw, 4.1rem); max-width: 15ch; }
+  .portada .entradilla { margin-top: 18px; max-width: 48ch; }
+  .portada-acciones { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+  .tarjeta-tienda { background: var(--blanco); border: 1px solid var(--linea); border-radius: var(--radio-m); padding: 22px 24px; }
+  .estado { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; }
+  .estado::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--menta); }
+  .estado.cerrado::before { background: #B4AFC4; }
+  .tarjeta-tienda dl { margin: 14px 0 0; display: grid; gap: 10px; }
+  .tarjeta-tienda dt { font-size: .9rem; color: var(--tinta-suave); }
+  .tarjeta-tienda dd { margin: 0; font-weight: 500; }
+  @media (max-width: 900px) { .portada-cabeza { grid-template-columns: 1fr; gap: 28px; } }
+
+  .semana { margin-top: 48px; }
+  .semana-titulo { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
+  .semana-titulo h2 { font-size: 1.5rem; }
+  .semana-titulo a { font-weight: 700; color: var(--magenta); text-underline-offset: 4px; }
+  .semana-rejilla { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 10px; }
+  .dia { background: var(--blanco); border: 1px solid var(--linea); border-radius: var(--radio-m); padding: 14px 12px 12px; min-height: 210px; display: flex; flex-direction: column; gap: 8px; }
+  .dia-cabeza { display: flex; align-items: baseline; gap: 8px; }
+  .dia-nombre { font-weight: 700; }
+  .dia-numero { color: var(--tinta-suave); }
+  .dia.hoy { border: 2px solid var(--magenta); box-shadow: 0 6px 24px -12px rgba(212,19,111,.5); }
+  .dia-cabeza { flex-wrap: wrap; }
+  .marca-hoy { margin-left: auto; font-size: .8rem; font-weight: 700; color: #fff; background: var(--magenta); border-radius: 999px; padding: 1px 9px; }
+  .dia.pasado { background: transparent; }
+  .dia.pasado .ticket { opacity: .55; }
+  .dia-vacio { color: var(--tinta-suave); font-size: .95rem; margin-top: auto; margin-bottom: auto; }
+  @media (max-width: 1000px) {
+    .semana-rejilla { grid-auto-flow: column; grid-template-columns: none; grid-auto-columns: minmax(220px, 72%); overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 8px; }
+    .dia { scroll-snap-align: start; }
+  }
+
+  /* Ticket de evento: la franja de color es el juego, y se repite igual en todas partes */
+  .ticket { display: block; width: 100%; text-align: left; background: var(--papel); border: 0; border-left: 4px solid var(--juego, var(--tinta)); border-radius: 6px; padding: 8px 10px; font: inherit; color: inherit; cursor: pointer; }
+  .ticket:hover { background: var(--lila); }
+  .ticket-hora { font-size: .85rem; color: var(--tinta-suave); font-variant-numeric: tabular-nums; }
+  .ticket-titulo { display: block; font-weight: 700; font-size: .95rem; line-height: 1.3; }
+  .ticket-juego { font-size: .82rem; color: var(--tinta-suave); }
+
+  section.bloque { padding: 88px 0; }
+  section.bloque + section.bloque { border-top: 1px solid var(--linea); }
+
+  /* Agenda */
+  .filtros { margin-top: 28px; display: grid; gap: 14px; }
+  .filtro { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .filtro-nombre { font-weight: 700; width: 64px; }
+  .chip { display: inline-flex; align-items: center; gap: 8px; min-height: 38px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--linea); background: var(--blanco); font: 500 .95rem var(--texto); color: var(--tinta); cursor: pointer; }
+  .chip:hover { border-color: var(--tinta-suave); }
+  .chip[aria-pressed="true"] { background: var(--tinta); border-color: var(--tinta); color: #fff; }
+  .punto { width: 10px; height: 10px; border-radius: 50%; background: var(--juego); flex: none; }
+  .chip[aria-pressed="true"] .punto { box-shadow: 0 0 0 2px #fff; }
+  @media (max-width: 700px) { .filtro { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; } .filtro-nombre { width: auto; flex: none; } .chip { flex: none; } }
+
+  .calendario-barra { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 36px 0 16px; }
+  .calendario-barra h3 { font-family: var(--display); font-size: 1.8rem; font-weight: 800; min-width: 9ch; }
+  .flecha { width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--linea); background: var(--blanco); font-size: 1.2rem; cursor: pointer; color: var(--tinta); }
+  .vista { margin-left: auto; display: inline-flex; background: var(--lila); padding: 4px; border-radius: 999px; }
+  .vista button { border: 0; background: none; padding: 8px 18px; border-radius: 999px; font: 700 .95rem var(--texto); color: var(--tinta-suave); cursor: pointer; }
+  .vista button[aria-pressed="true"] { background: var(--blanco); color: var(--tinta); box-shadow: 0 1px 3px rgba(30,26,46,.15); }
+
+  .mes { background: var(--blanco); border: 1px solid var(--linea); border-radius: var(--radio-m); overflow: hidden; }
+  .mes-cabeza, .mes-cuerpo { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+  .mes-cabeza div { padding: 12px; font-weight: 700; font-size: .9rem; color: var(--tinta-suave); border-bottom: 1px solid var(--linea); }
+  .celda { min-height: 128px; padding: 8px; border-right: 1px solid var(--linea); border-bottom: 1px solid var(--linea); display: flex; flex-direction: column; gap: 6px; }
+  .celda:nth-child(7n) { border-right: 0; }
+  .celda.fuera { background: var(--papel); }
+  .celda-num { font-size: .9rem; font-weight: 700; color: var(--tinta-suave); }
+  .celda.hoy .celda-num { color: #fff; background: var(--magenta); border-radius: 999px; width: 28px; height: 28px; display: grid; place-items: center; }
+  .celda .ticket { padding: 6px 8px; }
+  .celda .ticket-titulo { font-size: .85rem; font-weight: 500; }
+
+  .lista { display: grid; gap: 28px; }
+  .lista-dia h4 { margin: 0 0 10px; font-size: 1.05rem; }
+  .lista-dia .ticket { display: grid; grid-template-columns: 64px 1fr auto; gap: 4px 16px; align-items: center; padding: 14px 16px; background: var(--blanco); border: 1px solid var(--linea); border-left: 4px solid var(--juego); margin-bottom: 8px; }
+  .lista-dia .precio { grid-column: 3; grid-row: 1; }
+  .lista-dia .ticket-juego { grid-column: 2; }
+  .lista-dia .ticket-hora { font-size: 1rem; font-weight: 700; color: var(--tinta); }
+  .lista-dia .ticket-titulo { font-size: 1.02rem; }
+  .precio { font-weight: 700; white-space: nowrap; }
+  @media (max-width: 520px) { .lista-dia .ticket { grid-template-columns: 52px 1fr; } .lista-dia .precio { grid-column: 2; grid-row: 3; } }
+  .vacio { padding: 40px 24px; text-align: center; background: var(--blanco); border: 1px dashed var(--linea); border-radius: var(--radio-m); }
+  .vacio button { margin-top: 12px; }
+
+  /* Detalle de evento */
+  dialog { border: 0; border-radius: var(--radio-m); padding: 0; width: min(480px, calc(100% - 32px)); color: var(--tinta); box-shadow: 0 24px 64px -16px rgba(30,26,46,.45); }
+  dialog::backdrop { background: rgba(30,26,46,.45); }
+  .detalle { border-top: 8px solid var(--juego); padding: 26px 28px 28px; }
+  .detalle h3 { font-family: var(--display); font-size: 1.6rem; font-weight: 800; margin-top: 6px; }
+  .detalle dl { display: grid; grid-template-columns: auto 1fr; gap: 8px 18px; margin: 20px 0 24px; }
+  .detalle dt { color: var(--tinta-suave); }
+  .detalle dd { margin: 0; font-weight: 500; }
+  .detalle .acciones { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  /* Ligas */
+  .liga { margin-top: 32px; display: grid; grid-template-columns: 1.5fr 1fr; gap: 24px; align-items: start; }
+  .tabla-liga { background: var(--blanco); border: 1px solid var(--linea); border-radius: var(--radio-m); overflow: hidden; }
+  .tabla-liga header { padding: 20px 24px; border-bottom: 1px solid var(--linea); }
+  .tabla-liga header p { color: var(--tinta-suave); margin-top: 4px; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th, td { padding: 12px 24px; text-align: left; }
+  th { font-size: .9rem; color: var(--tinta-suave); font-weight: 700; }
+  td.num, th.num { text-align: right; }
+  tbody tr:nth-child(odd) { background: var(--papel); }
+  tbody tr:nth-child(-n+3) td:first-child { font-weight: 800; color: var(--magenta); }
+  .reglas { background: var(--lila); border-radius: var(--radio-m); padding: 22px 24px; }
+  .reglas ul { margin: 12px 0 0; padding-left: 20px; display: grid; gap: 8px; }
+  @media (max-width: 900px) { .liga { grid-template-columns: 1fr; } th, td { padding: 12px 16px; } }
+
+  /* Juegos */
+  .juegos { margin-top: 32px; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+  .juego { background: var(--blanco); border: 1px solid var(--linea); border-radius: var(--radio-m); padding: 18px 20px; display: grid; gap: 10px; }
+  .juego h3 { display: flex; align-items: center; gap: 10px; font-family: var(--texto); font-size: 1.1rem; font-weight: 700; }
+  .juego .punto { width: 12px; height: 12px; }
+  .formatos { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; padding: 0; margin: 0; }
+  .formatos li { font-size: .88rem; padding: 2px 10px; border-radius: 999px; background: var(--papel); }
+  .juego a { font-size: .92rem; font-weight: 700; color: var(--magenta); text-underline-offset: 3px; }
+  .nota { margin-top: 20px; color: var(--tinta-suave); }
+
+  /* Visítanos */
+  .visita { margin-top: 32px; display: grid; grid-template-columns: 1fr 1.2fr; gap: 24px; }
+  .visita-datos { display: grid; gap: 16px; align-content: start; }
+  .caja { background: var(--blanco); border: 1px solid var(--linea); border-radius: var(--radio-m); padding: 20px 24px; }
+  .caja h3 { font-size: 1.1rem; font-family: var(--texto); font-weight: 700; margin-bottom: 8px; }
+  .horario td { padding: 6px 0; vertical-align: top; }
+  .horario td:first-child { padding-right: 20px; color: var(--tinta-suave); white-space: nowrap; }
+  .horario tr.hoy td { color: var(--tinta); font-weight: 700; }
+  .horario tbody tr:nth-child(odd) { background: none; }
+  .horario tbody tr:nth-child(-n+3) td:first-child { color: var(--tinta-suave); font-weight: 400; }
+  .horario tbody tr.hoy td:first-child { color: var(--magenta); font-weight: 700; }
+  .mapa { display: grid; place-items: stretch; border-radius: var(--radio-m); overflow: hidden; border: 1px solid var(--linea); min-height: 380px; background: var(--lila); }
+  .mapa iframe { width: 100%; height: 100%; min-height: 380px; border: 0; }
+  .transporte { margin-top: 24px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .transporte ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
+  @media (max-width: 900px) { .visita, .transporte { grid-template-columns: 1fr; } }
+
+  /* Comunidad */
+  .redes { margin-top: 28px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .red { display: block; background: var(--blanco); border: 1px solid var(--linea); border-radius: var(--radio-m); padding: 18px 20px; text-decoration: none; }
+  .red:hover { border-color: var(--tinta); }
+  .red strong { display: block; font-size: 1.1rem; }
+  .red span { color: var(--tinta-suave); font-size: .95rem; }
+  @media (max-width: 900px) { .redes { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 520px) { .redes { grid-template-columns: 1fr; } }
+
+  /* Tienda online */
+  .tienda { background: var(--tinta); color: #fff; border-radius: 22px; padding: 48px; display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center; }
+  .tienda p { color: #CFCBDD; margin-top: 10px; }
+  @media (max-width: 700px) { .tienda { grid-template-columns: 1fr; padding: 32px 24px; } }
+
+  footer { padding: 40px 0 56px; color: var(--tinta-suave); font-size: .95rem; }
+  footer .envoltorio { display: flex; flex-wrap: wrap; gap: 12px 28px; justify-content: space-between; }
+  footer nav { display: flex; flex-wrap: wrap; gap: 6px 18px; }
+
+  /* Cookies: no tapa contenido, y aceptar y rechazar pesan lo mismo */
+  .cookies { position: fixed; left: 16px; bottom: 16px; z-index: 30; max-width: 420px; background: var(--blanco); border: 1px solid var(--linea); border-radius: var(--radio-m); padding: 18px 20px; box-shadow: 0 16px 40px -16px rgba(30,26,46,.35); font-size: .95rem; }
+  .cookies .acciones { display: flex; gap: 8px; margin-top: 12px; }
+  .cookies .boton { min-height: 40px; flex: 1; justify-content: center; }
+  @media (max-width: 520px) { .cookies { left: 8px; right: 8px; max-width: none; } }
+</style>
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="envoltorio">
+    <a href="#top" class="logo" aria-label="Origen, inicio"><svg role="img" aria-hidden="true" width="92" id="Capa_2" data-name="Capa 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 175.22 89.91">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: currentColor;
+      }
+    </style>
+  </defs>
+  <g id="LOGO">
+    <g id="LOGO-2" data-name="LOGO">
+      <g id="blanc">
+        <path id="ESTRELLA" class="cls-1" d="M37.36,0l1.43,15.21c.04.46.59.69.95.39l7.63-5.61-5.61,7.63c-.3.36-.07.9.39.95l12.71,1.43-12.71,1.43c-.46.04-.69.59-.39.95l5.61,7.63-7.63-5.61c-.36-.3-.9-.07-.95.39l-1.43,15.21-1.43-15.21c-.04-.46-.59-.69-.95-.39l-7.63,5.61,5.61-7.63c.3-.36.07-.9-.39-.95l-12.71-1.43,12.71-1.43c.46-.04.69-.59.39-.95l-5.61-7.63,7.63,5.61c.36.3.9.07.95-.39l1.43-15.21Z"/>
+        <path class="cls-1" d="M62.68,18.09c29.3-8.13,81.05-9.38,104.87,12.59,12.73,12.47,8.5,28.77-4.57,38.75-34.12,27.15-124.37,28.37-156.26-2.66-14.26-15.3-3.87-29.87,12.97-36.05,0,0,.48.88.48.88-4.44,2.49-8.7,5.43-11.98,9.34-6.24,7.3-4.89,15.71,2.19,21.85,10.39,8.93,24.28,12.49,37.47,15.08,31.88,5.4,71.18,3.37,100.59-10.73,26.61-13.63,21.08-30.93-4.46-40.81-12.75-4.96-26.45-7.23-40.06-8.28-13.67-1.03-27.47-.7-41.09,1.03l-.13-.99h0Z"/>
+        <g>
+          <path class="cls-1" d="M26.84,40.05c7.39,0,11.48,3.77,11.48,10.92s-4.09,10.92-11.48,10.92h-5.08c-7.39,0-11.48-3.77-11.48-10.92s4.09-10.92,11.48-10.92h5.08ZM21.97,45.1c-4.4,0-6.49,2.09-6.49,5.86s2.09,5.86,6.49,5.86h4.65c4.4,0,6.49-2.09,6.49-5.86s-2.09-5.86-6.49-5.86h-4.65Z"/>
+          <path class="cls-1" d="M56.65,40.05c5.12,0,7.92,2.62,7.92,7.55,0,2.78-.9,4.8-2.59,6.05l2.78,4.8c.22.44.37.87.37,1.28,0,1.18-1.22,2.5-2.74,2.5-.87,0-1.59-.44-2.06-1.28l-3.4-5.83h-11.23v4.71c0,1.53-.9,2.34-2.62,2.34s-2.59-.81-2.59-2.34v-7.24c0-1.68.78-2.56,2.31-2.56h13.85c1.84,0,2.71-.84,2.71-2.43s-.87-2.5-2.71-2.5h-13.97c-1.53,0-2.31-.84-2.31-2.53s.78-2.53,2.31-2.53h13.97Z"/>
+          <path class="cls-1" d="M71.71,59.82c0,1.53-.9,2.34-2.62,2.34s-2.59-.81-2.59-2.34v-17.71c0-1.53.87-2.34,2.62-2.34s2.59.81,2.59,2.34v17.71Z"/>
+          <path class="cls-1" d="M96.73,40.05c1.53,0,2.31.84,2.31,2.53s-.78,2.53-2.31,2.53h-11.13c-4.4,0-6.49,2.06-6.49,5.86s2.09,5.86,6.49,5.86h8.45v-3.56h-7.98c-1.47,0-2.21-.81-2.21-2.43s.75-2.43,2.21-2.43h10.85c1.47,0,2.21.84,2.21,2.43v8.67c0,1.37-.84,2.37-2.31,2.37h-11.45c-7.39,0-11.48-3.77-11.48-10.92s4.09-10.92,11.48-10.92h11.35Z"/>
+          <path class="cls-1" d="M121.92,40.05c1.53,0,2.31.84,2.31,2.53s-.78,2.53-2.31,2.53h-15.16v3.27h15c1.47,0,2.21.84,2.21,2.46s-.75,2.43-2.21,2.43h-15v3.56h15.22c1.53,0,2.31.84,2.31,2.53s-.78,2.53-2.31,2.53h-18.06c-1.53,0-2.31-.84-2.31-2.53v-16.78c0-1.68.78-2.53,2.31-2.53h18Z"/>
+          <path class="cls-1" d="M145.87,53.9v-11.79c0-1.53.9-2.34,2.59-2.34s2.62.81,2.62,2.34v17.71c0,1.62-.87,2.34-2.62,2.34-1,0-1.68-.25-2.34-.84l-14.63-13.82v12.32c0,1.53-.9,2.34-2.62,2.34s-2.59-.81-2.59-2.34v-17.71c0-1.62.87-2.34,2.84-2.34,1.31,0,2.12.31,2.96,1.12l13.79,13.01Z"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg></a>
+    <button class="abrir-menu" aria-expanded="false" aria-controls="menu">Menú</button>
+    <ul class="menu" id="menu">
+      <li><a href="#agenda">Agenda</a></li>
+      <li><a href="#ligas">Ligas</a></li>
+      <li><a href="#juegos">Juegos</a></li>
+      <li><a href="#visitanos">Visítanos</a></li>
+      <li><a href="#comunidad">Comunidad</a></li>
+    </ul>
+    <a class="boton boton-primario" href="/tienda">Tienda online</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="portada">
+    <div class="envoltorio">
+      <div class="portada-cabeza">
+        <div>
+          <h1>Tu tienda de cartas y juegos en el centro de Terrassa</h1>
+          <p class="entradilla">Ven a jugar, a aprender o a competir. Hay torneos todas las semanas de One Piece, Magic, Pokémon y siete juegos más. Si no tienes mazo, te prestamos uno.</p>
+          <div class="portada-acciones">
+            <a class="boton boton-primario" href="#agenda">Ver la agenda</a>
+            <a class="boton boton-secundario" href="https://www.google.com/maps/dir/?api=1&destination=Carrer%20Ample%2065%2C%2008225%20Terrassa" target="_blank" rel="noopener">Cómo llegar</a>
+          </div>
+        </div>
+        <aside class="tarjeta-tienda" aria-label="Estado de la tienda">
+          <span class="estado" id="estado">Abierto</span>
+          <dl>
+            <div><dt>Dirección</dt><dd>Carrer Ample 65, 08225 Terrassa</dd></div>
+            <div><dt>Hoy</dt><dd id="horario-hoy">10:30–13:30 y 16:30–20:30</dd></div>
+            <div><dt>Lo de siempre</dt><dd>Precios claros, mesas libres y café decente</dd></div>
+          </dl>
+        </aside>
+      </div>
+
+      <div class="semana" aria-labelledby="titulo-semana">
+        <div class="semana-titulo">
+          <h2 id="titulo-semana">Esta semana en la tienda</h2>
+          <a href="#agenda">Ver todo el mes</a>
+        </div>
+        <div class="semana-rejilla" id="semana"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloque" id="agenda" aria-labelledby="titulo-agenda">
+    <div class="envoltorio">
+      <h2 id="titulo-agenda">Agenda</h2>
+      <p class="entradilla">Elige tu juego o el tipo de evento. Pulsa un evento para ver precio y premios.</p>
+      <div class="filtros">
+        <div class="filtro" role="group" aria-label="Filtrar por juego"><span class="filtro-nombre">Juego</span><span id="filtro-juego" style="display:contents"></span></div>
+        <div class="filtro" role="group" aria-label="Filtrar por tipo"><span class="filtro-nombre">Tipo</span><span id="filtro-tipo" style="display:contents"></span></div>
+      </div>
+      <div class="calendario-barra">
+        <button class="flecha" id="mes-ant" aria-label="Mes anterior">‹</button>
+        <h3 id="mes-nombre" aria-live="polite">Noviembre 2026</h3>
+        <button class="flecha" id="mes-sig" aria-label="Mes siguiente">›</button>
+        <div class="vista" role="group" aria-label="Vista">
+          <button id="ver-mes" aria-pressed="true">Mes</button>
+          <button id="ver-lista" aria-pressed="false">Lista</button>
+        </div>
+      </div>
+      <div id="calendario"></div>
+    </div>
+  </section>
+
+  <section class="bloque" id="ligas" aria-labelledby="titulo-ligas">
+    <div class="envoltorio">
+      <h2 id="titulo-ligas">Ligas</h2>
+      <p class="entradilla">Cada semana sumas puntos en la liga de tu juego. Así va la clasificación.</p>
+      <div id="ligas-lista"></div>
+    </div>
+  </section>
+
+  <section class="bloque" id="juegos" aria-labelledby="titulo-juegos">
+    <div class="envoltorio">
+      <h2 id="titulo-juegos">Juegos y formatos</h2>
+      <p class="entradilla">Lo que se juega aquí. Si tu formato no aparece, pregúntalo en la tienda: montamos lo que pida la comunidad.</p>
+      <div class="juegos" id="juegos-lista"></div>
+    </div>
+  </section>
+
+  <section class="bloque" id="visitanos" aria-labelledby="titulo-visita">
+    <div class="envoltorio">
+      <h2 id="titulo-visita">Visítanos</h2>
+      <p class="entradilla">Estamos en el centro de Terrassa. Las mesas están abiertas todo el horario: pásate cuando quieras.</p>
+      <div class="visita">
+        <div class="visita-datos">
+          <div class="caja">
+            <h3>Dirección</h3>
+            <p>Carrer Ample 65, 08225 Terrassa</p>
+            <div class="portada-acciones" style="margin-top:16px">
+              <a class="boton boton-primario" href="https://www.google.com/maps/dir/?api=1&destination=Carrer%20Ample%2065%2C%2008225%20Terrassa" target="_blank" rel="noopener">Cómo llegar</a>
+              <a class="boton boton-secundario" href="https://www.google.com/maps/search/?api=1&query=Carrer%20Ample%2065%2C%2008225%20Terrassa" target="_blank" rel="noopener">Abrir en Maps</a>
+            </div>
+          </div>
+          <div class="caja">
+            <h3>Horario</h3>
+            <table class="horario"><tbody id="horario"></tbody></table>
+          </div>
+        </div>
+        <div class="mapa"><iframe title="Mapa de Origen en Carrer Ample 65, Terrassa" loading="lazy" src="https://www.google.com/maps?q=Carrer+Ample+65,+08225+Terrassa&output=embed"></iframe></div>
+      </div>
+      <div class="transporte">
+        <div class="caja"><h3>En tren</h3><ul><li>Terrassa Estació del Nord (R4 Renfe y S1 FGC), a 8 minutos a pie.</li></ul></div>
+        <div class="caja"><h3>En bus</h3><ul><li>Estació del Nord, a 550 m: líneas 2, 3, 6, 7 y H; e2.1 y e2.2 desde Barcelona; M8A y M8D desde Matadepera.</li><li>Camí de Castellar, a 450 m: líneas 6, 8 y 9.</li></ul></div>
+        <div class="caja"><h3>A pie</h3><ul><li>Desde Estació del Nord, 8 minutos.</li><li>Desde Terrassa Rambla, 25 minutos.</li></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloque" id="comunidad" aria-labelledby="titulo-comunidad">
+    <div class="envoltorio">
+      <h2 id="titulo-comunidad">Comunidad</h2>
+      <p class="entradilla">Resultados, fotos de los torneos y novedades de la tienda.</p>
+      <div class="redes">
+        <a class="red" href="#"><strong>Instagram</strong><span>Fotos de eventos y sobres nuevos</span></a>
+        <a class="red" href="#"><strong>YouTube</strong><span>Torneos, aperturas y contenido de la tienda</span></a>
+        <a class="red" href="#"><strong>TikTok</strong><span>El día a día de la tienda</span></a>
+        <a class="red" href="#"><strong>X (Twitter)</strong><span>Resultados y avisos rápidos</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloque" aria-labelledby="titulo-tienda">
+    <div class="envoltorio">
+      <div class="tienda">
+        <div>
+          <h2 id="titulo-tienda">La tienda online ya está abierta</h2>
+          <p>Singles, sobres, mazos, accesorios y juegos de mesa. Envío a casa o recogida gratis en la tienda.</p>
+        </div>
+        <a class="boton boton-primario" href="/tienda">Ir a la tienda online</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="envoltorio">
+    <span>© 2026 Origen. Carrer Ample 65, 08225 Terrassa</span>
+    <nav aria-label="Legal"><a href="#">Aviso legal</a><a href="#">Privacidad</a><a href="#">Cookies</a><a href="#">Condiciones de venta</a><a href="#">Envíos y devoluciones</a></nav>
+  </div>
+</footer>
+
+<div class="cookies" id="cookies" role="region" aria-label="Cookies" hidden>
+  <p>Usamos cookies propias y de terceros para analítica. Puedes aceptarlas o rechazarlas. <a href="#">Política de cookies</a></p>
+  <div class="acciones">
+    <button class="boton boton-secundario" data-cookies="rechazadas">Rechazar</button>
+    <button class="boton boton-secundario" data-cookies="aceptadas">Aceptar</button>
+  </div>
+</div>
+
+<dialog id="detalle" aria-labelledby="detalle-titulo"><div class="detalle" id="detalle-contenido"></div></dialog>
+
+<script>
+const DATOS = [{"events": [{"id": "77522270-a488-4bd5-a719-eb612a07a43b", "date": "2026-09-26", "time": "09:30", "title": "Vilemaw's Cup - Especial Inauguración Origen", "game": "rift", "type": "tournament", "price": 25, "meta": "Vilemaw's Cup 4"}, {"id": "e0e8cc4d-58d3-4212-980e-c6659b16e401", "date": "2026-09-26", "time": "17:15", "title": "Set Championship Attack of the Vine", "game": "lorc", "type": "tournament", "price": 7, "meta": "Sobre por participar + promos y tapete de premio"}, {"id": "9c52fb00-0337-4856-a978-5e20533c846e", "date": "2026-10-03", "time": "10:00", "title": "Torneo semanal Riftbound", "game": "rift", "type": "tournament", "price": 6, "meta": "Picking"}, {"id": "e1f43b52-47d3-43fd-8300-242c65908995", "date": "2026-10-03", "time": "10:30", "title": "Torneo semanal Digimon", "game": "digi", "type": "tournament", "price": 6, "meta": "Picking EX13"}, {"id": "1940afd1-fc4d-43fb-90fc-fe81de930ee1", "date": "2026-10-04", "time": "16:00", "title": "Presentación Mundos de Origen", "game": "swu", "type": "prerelease", "price": 30, "meta": "Sobre por ronda ganada + 1 carbonite si 3-0"}, {"id": "325aa4c5-fb93-4d3f-9e1e-d25e9dba03e1", "date": "2026-10-04", "time": "10:30", "title": "Presentación Beyond the Brave ", "game": "ygo", "type": "prerelease", "price": 20, "meta": "Tapete para ganador + Sorteos"}, {"id": "852f892f-918c-4fb7-a58b-d9d545841937", "date": "2026-10-04", "time": "10:30", "title": "Torneo semanal One Piece", "game": "op", "type": "tournament", "price": 6, "meta": "Picking OP15"}, {"id": "3fbe88d7-7c19-4db1-9b13-d255caee7320", "date": "2026-10-17", "time": "16:30", "title": "Presentación Hyperia City", "game": "lorc", "type": "prerelease", "price": 40, "meta": "2 sobres por participar + sorteo tapete"}, {"id": "c0e3b39a-3297-4585-bb05-4066bf26e4c4", "date": "2026-10-17", "time": "10:00", "title": "Pre-Rift Radiance", "game": "rift", "type": "prerelease", "price": 30, "meta": "Sobre por ronda ganada (3 rondas)"}, {"id": "6fd0afcc-5124-4bb7-aa07-d72e45581ad5", "date": "2026-10-18", "time": "16:30", "title": "Pre-Rift Radiance", "game": "rift", "type": "prerelease", "price": 30, "meta": "Sobre por ronda ganada (3 rondas)"}, {"id": "b44c2176-7240-48f1-8583-0c3769e3000d", "date": "2026-11-03", "time": "18:00", "title": "Torneo 4fun Riftbound", "game": "rift", "type": "casual", "price": 6, "meta": "Sobre de radiance + Nexus a sorteo"}, {"id": "a7b4e181-148b-4411-bf16-cff631792527", "date": "2026-11-04", "time": "18:00", "title": "Torneo Offmeta One Piece", "game": "op", "type": "tournament", "price": 6, "meta": "Sobre de EB05 + Promos"}, {"id": "39f4f89a-6775-440d-8429-d46657ecf4dc", "date": "2026-11-05", "time": "17:00", "title": "Liga Pokémon", "game": "pkmn", "type": "casual", "price": 0, "meta": "Sobre de liga por venir"}, {"id": "ebab3d1b-264b-49eb-a8b2-514b5ee90f09", "date": "2026-11-05", "time": "18:00", "title": "Torneo 4fun Digimon", "game": "digi", "type": "casual", "price": 6, "meta": "Sobre de EX13 + sobres de torneo"}, {"id": "631113be-69a7-485f-b4e0-070ab2c3b9ef", "date": "2026-11-06", "time": "17:30", "title": "Torneo semanal SWU", "game": "swu", "type": "league", "price": 6, "meta": "2 sobres weekly + 1 carbonite a picking cada 4"}, {"id": "34da41af-a8ad-4656-a982-5b3a6a577ad7", "date": "2026-11-07", "time": "10:00", "title": "3a jornada liga Radiance", "game": "rift", "type": "league", "price": 9, "meta": "6€ sobre a bote // 9€ sobre + liga"}, {"id": "4cd8b791-d109-449d-8b7b-ef00d4ca5bef", "date": "2026-11-07", "time": "17:00", "title": "Torneo semanal Genesys", "game": "ygo", "type": "tournament", "price": 6, "meta": "Sobre por participar + 1 sobre cada 2 de premio"}, {"id": "8f8f1c13-fb58-499a-b177-c8d56b11dc03", "date": "2026-11-07", "time": "17:00", "title": "Torneo semanal Lorcana", "game": "lorc", "type": "tournament", "price": 6, "meta": "Sobre de Hyperia City + 1 sobre extra para el ganador"}, {"id": "b72ed745-b74b-4cb2-83d1-8019abc5e61a", "date": "2026-11-07", "time": "10:30", "title": "Torneo semanal Digimon", "game": "digi", "type": "tournament", "price": 6, "meta": "Sobre de EX13 a picking + 2 sobres de torneo"}, {"id": "570ee0c1-fca8-4421-a263-2e1ba2d5cb81", "date": "2026-11-08", "time": "10:30", "title": "Torneo semanal One Piece", "game": "op", "type": "tournament", "price": 6, "meta": "Sobre de EB05 a picking + Promos"}, {"id": "5fa15d1e-ee96-4ddd-ae70-c4959eed9645", "date": "2026-11-08", "time": "10:30", "title": "Torneo semanal Yugioh", "game": "ygo", "type": "tournament", "price": 6, "meta": "Sobre por participar + 1 sobre cada 2 de premio"}, {"id": "49649955-cc0e-4e5b-90cf-186239084c89", "date": "2026-11-12", "time": "18:00", "title": "Torneo Offmeta One Piece", "game": "op", "type": "tournament", "price": 6, "meta": "Sobre de EB05 + Promos"}, {"id": "872249d4-9e9d-47f7-a599-74cf583f0fe8", "date": "2026-11-12", "time": "18:00", "title": "Torneo 4fun Riftbound", "game": "rift", "type": "casual", "price": 6, "meta": "Sobre de radiance + Nexus a sorteo"}, {"id": "c1e8b221-a446-47ca-919e-02d46351b11c", "date": "2026-11-12", "time": "17:00", "title": "Liga Pokémon", "game": "pkmn", "type": "casual", "price": 0, "meta": "Sobre de liga por venir"}, {"id": "2cdf565d-e230-4a56-8606-f0684d617614", "date": "2026-11-13", "time": "17:30", "title": "Torneo semanal Pokémon", "game": "pkmn", "type": "tournament", "price": 6, "meta": "Sobre a picking por persona"}, {"id": "d20e7a57-9cfa-41be-bea7-84b20873750d", "date": "2026-11-13", "time": "17:30", "title": "Torneo semanal SWU", "game": "swu", "type": "league", "price": 6, "meta": "2 sobres weekly + 1 carbonite a picking cada 4"}, {"id": "0a4100c4-c4fe-4086-a0de-c3f1ecfd499e", "date": "2026-11-14", "time": "17:00", "title": "Presentación Magnificent Maestros", "game": "ygo", "type": "prerelease", "price": 7, "meta": "Sobre + Tapetes a premio y sorteo"}, {"id": "18fd9ebd-d868-40e2-b630-2af8118ee192", "date": "2026-11-14", "time": "17:00", "title": "Torneo semanal Lorcana", "game": "lorc", "type": "tournament", "price": 6, "meta": "Sobre de Hyperia City + 1 sobre extra para el ganador"}, {"id": "f85a513f-2741-4017-808b-fa5c962a2a26", "date": "2026-11-14", "time": "10:30", "title": "Torneo semanal Digimon", "game": "digi", "type": "tournament", "price": 6, "meta": "Sobre de EX13 a picking + 2 sobres de torneo"}, {"id": "fa2581ba-f94c-4643-99a6-a1155e69cd1d", "date": "2026-11-14", "time": "10:00", "title": "4a jornada liga Radiance", "game": "rift", "type": "league", "price": 9, "meta": "6€ sobre a bote // 9€ sobre + liga"}, {"id": "03a30511-29ff-43b3-8f56-55a9115f623e", "date": "2026-11-15", "time": "10:30", "title": "Torneo semanal One Piece", "game": "op", "type": "tournament", "price": 6, "meta": "Sobre de EB05 a picking + Promos"}, {"id": "9bd4e2ba-825c-4650-aba9-8b25454a3e53", "date": "2026-11-15", "time": "10:30", "title": "1ª Jornada Battle City League", "game": "ygo", "type": "league", "price": 8, "meta": "5€ a sobres de premio + 3€ al bote de liga"}, {"id": "bd429825-981f-4536-b88d-6d74464bc623", "date": "2026-11-17", "time": "18:00", "title": "Torneo 4fun Riftbound", "game": "rift", "type": "casual", "price": 6, "meta": "Sobre de radiance + Nexus a sorteo"}, {"id": "75bbbff5-7fc8-429a-806c-25757b28c7e1", "date": "2026-11-18", "time": "18:00", "title": "Torneo Offmeta One Piece", "game": "op", "type": "tournament", "price": 6, "meta": "Sobre de EB05 + Promos"}, {"id": "0b574744-eea2-4c20-bb1f-024b61f1f6c6", "date": "2026-11-19", "time": "17:00", "title": "Liga Pokémon", "game": "pkmn", "type": "casual", "price": 0, "meta": "Sobre de liga por venir"}, {"id": "468e9e1f-f8f9-49cb-82e0-657ccb92428a", "date": "2026-11-19", "time": "18:00", "title": "Torneo 4fun Digimon", "game": "digi", "type": "casual", "price": 6, "meta": "Sobre de EX13 + sobres de torneo"}, {"id": "0e081032-f740-4e7f-a854-29c21059fff8", "date": "2026-11-20", "time": "17:30", "title": "Torneo semanal Pokémon", "game": "pkmn", "type": "tournament", "price": 6, "meta": "Sobre a picking por persona"}, {"id": "1e4f8289-cab8-4deb-b73f-1cec756187b0", "date": "2026-11-20", "time": "17:30", "title": "Torneo semanal SWU", "game": "swu", "type": "league", "price": 6, "meta": "2 sobres weekly + 1 carbonite a picking cada 4"}, {"id": "d6728676-e244-481e-a181-1f008436c796", "date": "2026-11-21", "time": "10:00", "title": "Vilemaw's Cup V - Origen", "game": "rift", "type": "tournament", "price": 35, "meta": "Entradas disponibles en nuestra tienda"}], "games": [{"id": "op", "name": "One Piece Card Game", "color": "#d72d2d", "formats": ["Standard", "Sealed", "Extra regulation"]}, {"id": "digi", "name": "Digimon Card Game", "color": "#ff7a1a", "formats": ["Standard", "Sealed"]}, {"id": "gundam", "name": "Gundam Card Game", "color": "#3b6fe2", "formats": ["Standard", "Sealed"]}, {"id": "mtg", "name": "Magic: The Gathering", "color": "#d3b15a", "formats": ["Commander", "Modern", "Pauper", "Draft", "Sealed"]}, {"id": "rift", "name": "Riftbound", "color": "#37b6a6", "formats": ["Standard", "Sealed"]}, {"id": "swu", "name": "Star Wars Unlimited", "color": "#7a9bff", "formats": ["Standard", "Sealed", "Draft"]}, {"id": "ygo", "name": "Yu-Gi-Oh", "color": "#6e35b1", "formats": ["Advanced", "Sealed", "Genesys"]}, {"id": "pkmn", "name": "Pokémon", "color": "#ffcb05", "formats": ["Standard", "Sealed"]}, {"id": "lorc", "name": "Lorcana", "color": "#E366D9", "formats": ["Standard", "Sealed"]}, {"id": "board", "name": "Juegos de mesa", "color": "#00e6e6", "formats": ["Mesa libre", "Demos guiadas"]}], "types": [{"id": "tournament", "name": "Torneo", "color": "#ff1a8a"}, {"id": "league", "name": "Liga", "color": "#00e6e6"}, {"id": "prerelease", "name": "Prerelease", "color": "#85d3b5"}, {"id": "demo", "name": "Demo", "color": "#ffcf3a"}, {"id": "casual", "name": "Casual", "color": "#c8c8d4"}], "today": "2026-11-13"}, {"leagues": [{"id": "da69e54d-b92b-455d-b506-001a24782282", "title": "Liga Homeworlds - Origen ", "game": "swu", "endDate": "2027-01-29", "rules": "La liga durará hasta la presentación del siguiente set.\nVictoria: 3 puntos.\nEmpate: 1 punto.\nPremio: Presentación gratis para el primer clasificado.\nSi llegamos a 20 participantes: Premio para los 2 primeros.\nSi juegas los 2 torneos semanales: Solo contará el torneo en el que hayas conseguido más puntos.", "discardWorst": 0, "rounds": 3, "rows": [{"position": 1, "name": "hansen74", "points": 21, "played": 3}, {"position": 2, "name": "YENAXS", "points": 18, "played": 3}, {"position": 3, "name": "Hidra", "points": 15, "played": 3}, {"position": 4, "name": "DosGrajos_REBELS", "points": 15, "played": 2}, {"position": 5, "name": "Urbano21", "points": 12, "played": 2}, {"position": 6, "name": "Kulham", "points": 9, "played": 2}, {"position": 7, "name": "Urbano17", "points": 6, "played": 2}, {"position": 8, "name": "Grauu18", "points": 6, "played": 1}, {"position": 9, "name": "Mondagh", "points": 3, "played": 2}]}], "games": [{"id": "op", "name": "One Piece Card Game", "color": "#d72d2d", "formats": ["Standard", "Sealed", "Extra regulation"]}, {"id": "digi", "name": "Digimon Card Game", "color": "#ff7a1a", "formats": ["Standard", "Sealed"]}, {"id": "gundam", "name": "Gundam Card Game", "color": "#3b6fe2", "formats": ["Standard", "Sealed"]}, {"id": "mtg", "name": "Magic: The Gathering", "color": "#d3b15a", "formats": ["Commander", "Modern", "Pauper", "Draft", "Sealed"]}, {"id": "rift", "name": "Riftbound", "color": "#37b6a6", "formats": ["Standard", "Sealed"]}, {"id": "swu", "name": "Star Wars Unlimited", "color": "#7a9bff", "formats": ["Standard", "Sealed", "Draft"]}, {"id": "ygo", "name": "Yu-Gi-Oh", "color": "#6e35b1", "formats": ["Advanced", "Sealed", "Genesys"]}, {"id": "pkmn", "name": "Pokémon", "color": "#ffcb05", "formats": ["Standard", "Sealed"]}, {"id": "lorc", "name": "Lorcana", "color": "#E366D9", "formats": ["Standard", "Sealed"]}, {"id": "board", "name": "Juegos de mesa", "color": "#00e6e6", "formats": ["Mesa libre", "Demos guiadas"]}]}, {}];
+const EVENTOS = DATOS[0].events;
+const LIGAS = DATOS[1].leagues;
+const JUEGOS = DATOS[1].games;
+const JUEGO = Object.fromEntries(JUEGOS.map(j => [j.id, j]));
+const TIPOS = { tournament: "Torneo", league: "Liga", prerelease: "Presentación", demo: "Demo", casual: "Casual" };
+const DIAS = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+const MESES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+// Horario por día de la semana (0 = lunes); null = cerrado
+const HORARIO = [null, ...Array(4).fill([["10:30","13:30"],["16:30","20:30"]]), ...Array(2).fill([["10:00","14:00"],["16:00","20:30"]])];
+
+const $ = s => document.querySelector(s);
+const iso = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const diaSemana = d => (d.getDay() + 6) % 7;
+const hoy = new Date();
+const HOY = iso(hoy);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const ordenar = l => l.slice().sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
+
+function ticket(e, conPrecio) {
+  const j = JUEGO[e.game] || { name: e.game, color: "#888" };
+  return `<button class="ticket" style="--juego:${j.color}" data-id="${e.id}">
+    <span class="ticket-hora">${e.time}</span>
+    <span class="ticket-titulo">${esc(e.title)}</span>
+    ${conPrecio ? `<span class="precio">${e.price ? e.price + " €" : "Gratis"}</span><span class="ticket-juego">${esc(j.name)} · ${TIPOS[e.type] || e.type}</span>` : ""}
+  </button>`;
+}
+
+// Portada: la semana en curso, de lunes a domingo
+function pintarSemana() {
+  const lunes = new Date(hoy); lunes.setDate(hoy.getDate() - diaSemana(hoy));
+  let html = "";
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(lunes); d.setDate(lunes.getDate() + i);
+    const k = iso(d);
+    const evs = ordenar(EVENTOS.filter(e => e.date === k));
+    const clase = k === HOY ? "hoy" : (k < HOY ? "pasado" : "");
+    html += `<div class="dia ${clase}">
+      <div class="dia-cabeza"><span class="dia-nombre">${DIAS[i]}</span><span class="dia-numero">${d.getDate()}</span>${k === HOY ? '<span class="marca-hoy">Hoy</span>' : ""}</div>
+      ${evs.length ? evs.map(e => ticket(e)).join("") : `<p class="dia-vacio">${HORARIO[i] ? "Mesa libre" : "Cerrado"}</p>`}
+    </div>`;
+  }
+  $("#semana").innerHTML = html;
+  // En móvil la semana se desplaza en horizontal: empieza en hoy, no en el lunes
+  const h = $("#semana .hoy"); if (h) $("#semana").scrollLeft = h.offsetLeft - $("#semana").offsetLeft;
+}
+
+// Agenda
+const estado = { juego: "todos", tipo: "todos", vista: matchMedia("(max-width: 700px)").matches ? "lista" : "mes", anio: hoy.getFullYear(), mes: hoy.getMonth() };
+function chips(contenedor, opciones, clave) {
+  contenedor.innerHTML = opciones.map(([v, t, color]) =>
+    `<button class="chip" aria-pressed="${estado[clave] === v}" data-v="${v}" ${color ? `style="--juego:${color}"` : ""}>${color ? '<span class="punto"></span>' : ""}${esc(t)}</button>`).join("");
+  contenedor.onclick = ev => { const b = ev.target.closest(".chip"); if (!b) return; estado[clave] = b.dataset.v; pintarFiltros(); pintarCalendario(); };
+}
+function pintarFiltros() {
+  chips($("#filtro-juego"), [["todos", "Todos"], ...JUEGOS.map(j => [j.id, j.name, j.color])], "juego");
+  chips($("#filtro-tipo"), [["todos", "Todos"], ...Object.entries(TIPOS)], "tipo");
+}
+const filtrados = () => EVENTOS.filter(e => (estado.juego === "todos" || e.game === estado.juego) && (estado.tipo === "todos" || e.type === estado.tipo));
+
+function pintarCalendario() {
+  $("#mes-nombre").textContent = `${MESES[estado.mes]} ${estado.anio}`;
+  $("#ver-mes").setAttribute("aria-pressed", estado.vista === "mes");
+  $("#ver-lista").setAttribute("aria-pressed", estado.vista === "lista");
+  const prefijo = `${estado.anio}-${String(estado.mes + 1).padStart(2, "0")}`;
+  // En la lista del mes en curso, lo que ya pasó no aporta: empieza en hoy
+  const desdeHoy = estado.vista === "lista" && HOY.startsWith(prefijo);
+  const evs = ordenar(filtrados().filter(e => e.date.startsWith(prefijo) && (!desdeHoy || e.date >= HOY)));
+  const caja = $("#calendario");
+  if (!evs.length) {
+    caja.innerHTML = `<div class="vacio"><p style="margin:0 auto">No hay eventos con estos filtros en ${MESES[estado.mes].toLowerCase()}.</p><button class="boton boton-secundario" id="limpiar">Quitar filtros</button></div>`;
+    $("#limpiar").onclick = () => { estado.juego = estado.tipo = "todos"; pintarFiltros(); pintarCalendario(); };
+    return;
+  }
+  if (estado.vista === "lista") {
+    const porDia = {};
+    evs.forEach(e => (porDia[e.date] ||= []).push(e));
+    caja.innerHTML = `<div class="lista">${Object.entries(porDia).map(([k, l]) => {
+      const d = new Date(k + "T12:00");
+      return `<div class="lista-dia"><h4>${DIAS[diaSemana(d)]} ${d.getDate()}${k === HOY ? " · hoy" : ""}</h4>${l.map(e => ticket(e, true)).join("")}</div>`;
+    }).join("")}</div>`;
+    return;
+  }
+  const primero = new Date(estado.anio, estado.mes, 1);
+  const inicio = new Date(primero); inicio.setDate(1 - diaSemana(primero));
+  let celdas = "";
+  for (let i = 0; i < 42; i++) {
+    const d = new Date(inicio); d.setDate(inicio.getDate() + i);
+    if (i >= 35 && d.getMonth() !== estado.mes) break;
+    const k = iso(d);
+    const fuera = d.getMonth() !== estado.mes;
+    celdas += `<div class="celda ${fuera ? "fuera" : ""} ${k === HOY ? "hoy" : ""}"><span class="celda-num">${d.getDate()}</span>${fuera ? "" : evs.filter(e => e.date === k).map(e => ticket(e)).join("")}</div>`;
+  }
+  caja.innerHTML = `<div class="mes"><div class="mes-cabeza">${["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"].map(n => `<div>${n}</div>`).join("")}</div><div class="mes-cuerpo">${celdas}</div></div>`;
+}
+$("#mes-ant").onclick = () => { if (--estado.mes < 0) { estado.mes = 11; estado.anio--; } pintarCalendario(); };
+$("#mes-sig").onclick = () => { if (++estado.mes > 11) { estado.mes = 0; estado.anio++; } pintarCalendario(); };
+$("#ver-mes").onclick = () => { estado.vista = "mes"; pintarCalendario(); };
+$("#ver-lista").onclick = () => { estado.vista = "lista"; pintarCalendario(); };
+
+// Detalle de un evento, desde cualquier ticket de la página
+document.addEventListener("click", ev => {
+  const t = ev.target.closest(".ticket"); if (!t) return;
+  const e = EVENTOS.find(x => x.id === t.dataset.id); if (!e) return;
+  const j = JUEGO[e.game] || { name: e.game, color: "#888" };
+  const d = new Date(e.date + "T12:00");
+  $("#detalle-contenido").style.setProperty("--juego", j.color);
+  $("#detalle-contenido").innerHTML = `
+    <span class="ticket-juego">${esc(j.name)}</span>
+    <h3 id="detalle-titulo">${esc(e.title)}</h3>
+    <dl>
+      <dt>Cuándo</dt><dd>${DIAS[diaSemana(d)]} ${d.getDate()} de ${MESES[d.getMonth()].toLowerCase()}, a las ${e.time}</dd>
+      <dt>Tipo</dt><dd>${TIPOS[e.type] || e.type}</dd>
+      <dt>Inscripción</dt><dd>${e.price ? e.price + " €" : "Gratis"}</dd>
+      ${e.meta ? `<dt>Premios</dt><dd>${esc(e.meta)}</dd>` : ""}
+    </dl>
+    <div class="acciones">
+      <a class="boton boton-primario" href="https://www.google.com/maps/dir/?api=1&destination=Carrer%20Ample%2065%2C%2008225%20Terrassa" target="_blank" rel="noopener">Cómo llegar</a>
+      <button class="boton boton-secundario" id="cerrar-detalle">Cerrar</button>
+    </div>`;
+  $("#cerrar-detalle").onclick = () => $("#detalle").close();
+  $("#detalle").showModal();
+});
+$("#detalle").addEventListener("click", ev => { if (ev.target === ev.currentTarget) ev.currentTarget.close(); });
+
+// Ligas
+$("#ligas-lista").innerHTML = LIGAS.map(l => {
+  const j = JUEGO[l.game] || { name: l.game };
+  const fin = new Date(l.endDate + "T12:00");
+  return `<div class="liga">
+    <div class="tabla-liga">
+      <header><h3>${esc(l.title.trim())}</h3><p>${esc(j.name)}. ${l.rounds} jornadas jugadas, termina el ${fin.getDate()} de ${MESES[fin.getMonth()].toLowerCase()} de ${fin.getFullYear()}.</p></header>
+      <table><thead><tr><th>#</th><th>Jugador</th><th class="num">Puntos</th><th class="num">Jornadas</th></tr></thead>
+      <tbody>${l.rows.map(r => `<tr><td>${r.position}</td><td>${esc(r.name)}</td><td class="num">${r.points}</td><td class="num">${r.played}</td></tr>`).join("")}</tbody></table>
+    </div>
+    <aside class="reglas"><h3>Cómo funciona</h3><ul>${l.rules.split("\n").filter(Boolean).map(r => `<li>${esc(r)}</li>`).join("")}</ul></aside>
+  </div>`;
+}).join("");
+
+// Juegos: el enlace lleva a la agenda ya filtrada
+$("#juegos-lista").innerHTML = JUEGOS.map(j => {
+  const n = EVENTOS.filter(e => e.game === j.id && e.date >= HOY).length;
+  return `<article class="juego" style="--juego:${j.color}">
+    <h3><span class="punto"></span>${esc(j.name)}</h3>
+    <ul class="formatos">${j.formats.map(f => `<li>${esc(f)}</li>`).join("")}</ul>
+    ${n ? `<a href="#agenda" data-juego="${j.id}">${n} ${n === 1 ? "evento próximo" : "eventos próximos"}</a>` : `<span class="ticket-juego">Pregunta en tienda por las próximas fechas</span>`}
+  </article>`;
+}).join("");
+$("#juegos-lista").addEventListener("click", ev => { const a = ev.target.closest("[data-juego]"); if (!a) return; estado.juego = a.dataset.juego; pintarFiltros(); pintarCalendario(); });
+
+// Horario y estado "abierto ahora"
+const tramo = t => t.map(([a, b]) => `${a}–${b}`).join(" y ");
+$("#horario").innerHTML = DIAS.map((n, i) => `<tr class="${i === diaSemana(hoy) ? "hoy" : ""}"><td>${n}</td><td>${HORARIO[i] ? tramo(HORARIO[i]) : "Cerrado"}</td></tr>`).join("");
+(function () {
+  const t = HORARIO[diaSemana(hoy)];
+  const ahora = hoy.toTimeString().slice(0, 5);
+  $("#horario-hoy").textContent = t ? tramo(t) : "Cerrado";
+  const abierto = t && t.some(([a, b]) => ahora >= a && ahora < b);
+  const el = $("#estado");
+  if (abierto) { el.textContent = `Abierto ahora, hasta las ${t.find(([a, b]) => ahora >= a && ahora < b)[1]}`; }
+  else {
+    el.classList.add("cerrado");
+    const sig = t && t.find(([a]) => ahora < a);
+    el.textContent = sig ? `Cerrado ahora, abrimos a las ${sig[0]}` : "Cerrado ahora";
+  }
+})();
+
+// Menú móvil
+$(".abrir-menu").onclick = ev => { const m = $("#menu"); const a = m.classList.toggle("abierto"); ev.currentTarget.setAttribute("aria-expanded", a); };
+$("#menu").onclick = ev => { if (ev.target.closest("a")) { $("#menu").classList.remove("abierto"); $(".abrir-menu").setAttribute("aria-expanded", false); } };
+
+// Cookies
+if (!localStorage.getItem("cookies")) $("#cookies").hidden = false;
+$("#cookies").onclick = ev => { const b = ev.target.closest("[data-cookies]"); if (!b) return; localStorage.setItem("cookies", b.dataset.cookies); $("#cookies").hidden = true; };
+
+pintarSemana(); pintarFiltros(); pintarCalendario();
+</script>
+</body>
+</html>
